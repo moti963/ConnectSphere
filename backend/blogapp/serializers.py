@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from .models import Blog, BlogContent, Tag
 from django.db import transaction
+from django.contrib.auth.models import User
 
 
 class BlogContentSerializer(serializers.ModelSerializer):
@@ -22,7 +23,7 @@ class BlogSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
 
     # Format the created_at field
-    # created_at = serializers.DateTimeField(format="%d-%m-%Y %H:%M:%S")
+    created_at = serializers.DateTimeField(format="%d-%B-%Y %I:%M %p")
     
     class Meta:
         model = Blog
@@ -71,12 +72,28 @@ class BlogListSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
 
     # Format the created_at field
-    created_at = serializers.DateTimeField(format="%d-%m-%Y %H:%M:%S")
+    created_at = serializers.DateTimeField(format="%d-%B-%Y %I:%M %p")
     
     class Meta:
         model = Blog
         fields = ['id', 'user', 'title', 'description', 'tags', 'views', 'created_at']
         read_only_fields = ['user', 'views', 'created_at']
+
+
+class BlogListTagSerializer(serializers.ModelSerializer):
+
+    # Format the created_at field
+    created_at = serializers.DateTimeField(format="%d-%m-%Y %H:%M:%S")
+        
+    class Meta:
+        model = Blog
+        fields = ['id', 'user', 'title', 'description',  'views', 'created_at']
+        read_only_fields = ['user', 'views', 'created_at']
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['user'] = instance.user.username
+        return representation
 
 
 class BlogCreateSerializer(serializers.ModelSerializer):

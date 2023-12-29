@@ -30,6 +30,7 @@ const BlogPost = () => {
         return <NotFound />;
     }
 
+
     return (
         <div className="container my-5">
             <h2>{blog.title}</h2>

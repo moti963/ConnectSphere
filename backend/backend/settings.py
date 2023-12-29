@@ -103,8 +103,13 @@ DATABASES = {
     #     'ENGINE': 'djongo',
     #     'NAME': 'blogapp',
     #     'ENFORCE_ENGINE': False,
-    #     'HOST': 'localhost',
-    #     'PORT': 27017,
+    #     'CLIENT': {
+    #         'host': 'mongodb+srv://moti9:<password@cluster0.x18sgkj.mongodb.net/?retryWrites=true&w=majority',
+    #         'port': 27017,
+    #         'username': 'moti9',
+    #         'password': 'password',
+    #         'name': 'blogapp',
+    #     },
     # },
 }
 

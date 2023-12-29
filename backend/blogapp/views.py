@@ -124,6 +124,40 @@ class TagListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class GetBlogByTag(generics.ListAPIView):
+    serializer_class=BlogListSerializer
+    def get_queryset(self):
+        tag_name = self.kwargs.get('tag_name')
+        queryset = Blog.objects.filter(tags__tag=tag_name)
+        return queryset
+    
+
+class SearchBlogView(generics.ListAPIView):
+    serializer_class = BlogListSerializer
+
+    def get_queryset(self):
+        search_query = self.request.query_params.get('query', '')
+        queryset = Blog.objects.filter(title__icontains=search_query)
+        return queryset
+
+
+
+# class GetBlogByTag(APIView):
+#     def get(self, request, tag_name):
+#         try:
+#             # tag = Tag.objects.filter(tag=tag_name)
+#             # print(tag)
+#             blogs = Blog.objects.filter(tags__tag=tag_name)
+#             # print(blogs)
+#             serializer = BlogListSerializer(blogs)
+#             # print(serializer.data)
+#             print(serializer.errors)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return Response({"message": "no blog found."}, status=status.HTTP_204_NO_CONTENT)
+
+
+
 # class BlogCreateView(APIView):
 #     permission_classes = [IsAuthenticated]
 #     authentication_classes = [JWTAuthentication]

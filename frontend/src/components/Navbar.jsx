@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate} from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import logo from '../static/images/logo2.png';
 import '../static/css/Navbar.css';
@@ -56,10 +56,6 @@ const Navbar = () => {
                 </NavLink>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0 d-flex me-auto">
-              <input class="form-control" type="search" placeholder="Search" aria-label="Search" />
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
             <ul className="navbar-nav ml-auto">
               <li>
                 <NavLink className="nav-link" to="/blog/newpost">
