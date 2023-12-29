@@ -65,22 +65,32 @@ class BlogAPI {
         }
     }
 
-    // static async postBlog(body) {
-    //     const cookie = new Cookies();
-    //     const access_token = cookie.get("access_token");
-    //     try {
-    //         const response = await axios.post(`${this.baseUrl}/newblog/`, body, {
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': `JWT ${access_token}`,
-    //             },
-    //         });
-    //         return response;
-    //     } catch (error) {
-    //         console.log("Error in posting blog", error.message);
-    //         throw error;
-    //     }
-    // }
+    static async getBlogByTag(tag_name) {
+        try {
+            const response = await axios.get(`${this.baseUrl}/by-tag/${tag_name}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            return response;
+        } catch (error) {
+            console.log("Error in fetching blogs", error.message);
+            // throw error;
+        }
+    }
+
+    static async searchBlogs(searchQuery) {
+        try {
+            const response = await axios.get(`${this.baseUrl}/search/?query=${searchQuery}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response;
+        } catch (error) {
+            console.log("error in searching blogs");
+        }
+    }
 };
 
 export default BlogAPI;
