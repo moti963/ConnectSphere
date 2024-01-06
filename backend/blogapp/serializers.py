@@ -24,10 +24,11 @@ class BlogSerializer(serializers.ModelSerializer):
 
     # Format the created_at field
     created_at = serializers.DateTimeField(format="%d-%B-%Y %I:%M %p")
+    username = serializers.CharField(source="user.username", read_only=True)
     
     class Meta:
         model = Blog
-        fields = ['id', 'user', 'title', 'description', 'content', 'status', 'tags', 'views', 'created_at']
+        fields = ['id', 'user', 'username', 'title', 'description', 'content', 'status', 'tags', 'views', 'created_at']
         read_only_fields = ['user', 'views', 'created_at']
         extra_kwargs = {
             'title': {'required': True, 'allow_blank': False},
@@ -36,36 +37,6 @@ class BlogSerializer(serializers.ModelSerializer):
             'tags': {'required': True, 'allow_blank': False},
         }
 
-    def create(self, validated_data):
-        # print(validated_data)
-        content_data = validated_data.pop('content')
-        tags_data = validated_data.pop('tags', [])
-        # print(tags_data)
-        
-        content = BlogContent.objects.create(**content_data)
-        tags = [Tag.objects.get_or_create(tag=tag)[0] for tag in tags_data]
-        
-        blog = Blog.objects.create(content=content, **validated_data)
-        blog.tags.set(tags)
-        
-        return blog
-
-    def update(self, instance, validated_data):
-        content_data = validated_data.pop('content', {})
-        tags_data = validated_data.pop('tags', [])
-
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.status = validated_data.get('status', instance.status)
-        
-        instance.content.content = content_data.get('content', instance.content.content)
-        instance.content.save()
-
-        tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_data]
-        instance.tags.set(tags)
-
-        instance.save()
-        return instance
 
 
 class BlogListSerializer(serializers.ModelSerializer):
@@ -73,27 +44,24 @@ class BlogListSerializer(serializers.ModelSerializer):
 
     # Format the created_at field
     created_at = serializers.DateTimeField(format="%d-%B-%Y %I:%M %p")
+    username = serializers.CharField(source="user.username", read_only=True)
     
     class Meta:
         model = Blog
-        fields = ['id', 'user', 'title', 'description', 'tags', 'views', 'created_at']
+        fields = ['id', 'user', 'username', 'title', 'description', 'tags', 'views', 'created_at']
         read_only_fields = ['user', 'views', 'created_at']
 
 
 class BlogListTagSerializer(serializers.ModelSerializer):
-
     # Format the created_at field
-    created_at = serializers.DateTimeField(format="%d-%m-%Y %H:%M:%S")
+    created_at = serializers.DateTimeField(format="%d-%m-%Y %H:%M:%S", read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
         
     class Meta:
         model = Blog
-        fields = ['id', 'user', 'title', 'description',  'views', 'created_at']
-        read_only_fields = ['user', 'views', 'created_at']
+        fields = ['id', 'user','username', 'title', 'description',  'views', 'created_at']
+        read_only_fields = ['user', 'views']
     
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['user'] = instance.user.username
-        return representation
 
 
 class BlogCreateSerializer(serializers.ModelSerializer):
@@ -155,4 +123,33 @@ class BlogCreateSerializer(serializers.ModelSerializer):
 
     
 
+    # def create(self, validated_data):
+    #     # print(validated_data)
+    #     content_data = validated_data.pop('content')
+    #     tags_data = validated_data.pop('tags', [])
+    #     # print(tags_data)
+        
+    #     content = BlogContent.objects.create(**content_data)
+    #     tags = [Tag.objects.get_or_create(tag=tag)[0] for tag in tags_data]
+        
+    #     blog = Blog.objects.create(content=content, **validated_data)
+    #     blog.tags.set(tags)
+        
+    #     return blog
 
+    # def update(self, instance, validated_data):
+    #     content_data = validated_data.pop('content', {})
+    #     tags_data = validated_data.pop('tags', [])
+
+    #     instance.title = validated_data.get('title', instance.title)
+    #     instance.description = validated_data.get('description', instance.description)
+    #     instance.status = validated_data.get('status', instance.status)
+        
+    #     instance.content.content = content_data.get('content', instance.content.content)
+    #     instance.content.save()
+
+    #     tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_data]
+    #     instance.tags.set(tags)
+
+    #     instance.save()
+    #     return instance

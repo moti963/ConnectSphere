@@ -12,5 +12,6 @@ urlpatterns = [
     path("update/<uuid:pk>", views.BlogUpdateView.as_view(), name="update_blog"),
     path("by-tag/<str:tag_name>", views.GetBlogByTag.as_view(), name="blog_by_tag"),
     path("search/", views.SearchBlogView.as_view(), name="search_blog"),
-
+    path("myblogs/", views.MyBlogListView.as_view(), name="get_my_blogs"),
+    path("mydrafts/", views.MyDraftBlogListView.as_view(), name="get_my_drafts"),
 ]

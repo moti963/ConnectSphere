@@ -3,20 +3,35 @@
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import AuthAPI from './AuthAPI';
 import { Cookies } from 'react-cookie';
-const AuthContext = createContext();
 
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
-    const cookie = useMemo(() => new Cookies(), []); 
-
+    const cookie = useMemo(() => new Cookies(), []);
 
     useEffect(() => {
-        AuthAPI.checkAuthentication()
-            .then(() => setIsAuthenticated(true))
-            .catch(() => setIsAuthenticated(false))
-            .finally(() => setLoading(false));
+        const checkAuth = async () => {
+            try {
+                const accessToken = cookie.get('access_token');
+                const refreshToken = cookie.get('refresh_token');
+
+                if (accessToken && refreshToken) {
+                    // Verify the access token
+                    await AuthAPI.checkAuthentication();
+                    setIsAuthenticated(true);
+                } else {
+                    setIsAuthenticated(false);
+                }
+            } catch (error) {
+                setIsAuthenticated(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
     }, [cookie]);
 
     const login = async (credentials) => {
@@ -24,8 +39,8 @@ export const AuthProvider = ({ children }) => {
             const response = await AuthAPI.LoginUser(credentials);
 
             // Store the access and refresh tokens in cookies
-            cookie.set('access_token', response.access);
-            cookie.set('refresh_token', response.refresh);
+            cookie.set('access_token', response.data.access);
+            cookie.set('refresh_token', response.data.refresh);
             setIsAuthenticated(true);
         } catch (error) {
             setIsAuthenticated(false);
@@ -36,7 +51,6 @@ export const AuthProvider = ({ children }) => {
     const signup = async (userData) => {
         try {
             await AuthAPI.SignupUser(userData);
-            setIsAuthenticated(true);
         } catch (error) {
             setIsAuthenticated(false);
             throw error;
@@ -45,7 +59,8 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await AuthAPI.logoutUser();
+            const refreshToken = cookie.get('refresh_token');
+            await AuthAPI.logoutUser(refreshToken);
             cookie.remove('access_token');
             cookie.remove('refresh_token');
             setIsAuthenticated(false);

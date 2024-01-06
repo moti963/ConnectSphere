@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import BlogAPI from './BlogAPI';
+import BlogAPI from '../blog/BlogAPI';
 
-const BlogHome = () => {
+const UserPostBlog = () => {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -49,4 +49,4 @@ const BlogHome = () => {
   );
 };
 
-export default BlogHome;
+export default UserPostBlog;

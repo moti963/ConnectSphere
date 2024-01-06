@@ -12,15 +12,15 @@ const BlogList = ({ blogs }) => {
                             {blog.image && <img src={blog.image} className="card-img-top" alt={blog.title} />}
                             <div className="card-body">
                                 <h5 className="card-title">
-                                    <Link to={`/blog/post/${blog.id}`}>{blog.title}</Link>
+                                    <Link to={`/post/${blog.id}`}>{blog.title}</Link>
                                 </h5>
                                 <p className="card-text">{blog.description}</p>
                             </div>
                             <div className="card-footer d-flex justify-content-between align-items-center">
                                 <div className="author">
-                                    <Link to={`/user/get-user/${blog.user}`}>
+                                    <Link to={`/profile/${blog.username}`}>
                                         <img src={logo} alt={blog.user} className="author-avatar" />
-                                        <span className="ml-2">{blog.user}</span>
+                                        <span className="ml-2">{blog.username}</span>
                                     </Link>
                                 </div>
                                 <small className="text-muted">{blog.created_at}</small>
@@ -32,7 +32,7 @@ const BlogList = ({ blogs }) => {
                                         <span><i className="mx-2 icon-eye"></i>{blog.views} Views</span>
                                         <span><i className="mx-2 icon-comment"></i>{blog.comments} Comments</span>
                                     </div>
-                                    <Link to={`/blog/post/${blog.id}`} className="btn btn-sm btn-primary">
+                                    <Link to={`/post/${blog.id}`} className="btn btn-sm btn-primary">
                                         Continue Reading
                                     </Link>
                                 </div>

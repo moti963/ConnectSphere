@@ -4,6 +4,8 @@ import twitter from '../static/images/twitterx.svg';
 import instagram from '../static/images/instagram.svg';
 import linkedin from '../static/images/linkedin.svg';
 import github from '../static/images/github.svg';
+import logo from '../static/images/logo192.png';
+
 
 const About = () => {
   return (
@@ -43,7 +45,7 @@ const About = () => {
                 <div className="col-md-6 mb-4">
                   <div className="card">
                     <img
-                      src="https://placekitten.com/200/200"
+                      src={logo}
                       alt="Team Member"
                       className="card-img-top"
                     />
@@ -56,7 +58,7 @@ const About = () => {
                 <div className="col-md-6 mb-4">
                   <div className="card">
                     <img
-                      src="https://placekitten.com/201/201"
+                      src={logo}
                       alt="Team Member"
                       className="card-img-top"
                     />

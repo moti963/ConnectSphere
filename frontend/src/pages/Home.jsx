@@ -57,9 +57,9 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <div className="container">
-        <header className="navbar navbar-expand-lg navbar-light bg-light rounded px-3">
+    <>
+      <div className="container-fluid">
+        <header className="navbar navbar-expand-lg bg-dark px-5" data-bs-theme="dark">
           <form className="form-inline d-flex">
             <input className="form-control" type="search" placeholder="Search" aria-label="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             <button className="btn btn-sm btn-outline-success" type="button" onClick={handleSearch}>Search</button>
@@ -89,7 +89,7 @@ const Home = () => {
         {/* Render your blog posts based on the selected tag */}
         {blogPosts ? (<BlogList blogs={blogPosts} />) : (<NotFound />)}
       </main>
-    </div>
+    </>
   );
 };
 

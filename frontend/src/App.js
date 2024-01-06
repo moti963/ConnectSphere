@@ -3,14 +3,12 @@ import Navbar from './components/Navbar';
 import Login from './auth/Login';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import BlogHome from './blog/BlogHome';
 import { AuthProvider } from './auth/AuthContext';
 import Signup from './auth/Signup';
 import About from './pages/About';
 import BlogPost from './blog/BlogPost';
 import WriteBlog from './blog/WriteBlog';
-import BlogEdit from './blog/BlogEdit';
-import ProfileHome from './user/ProfileHome';
+import UserHome from './user/UserHome';
 
 
 function App() {
@@ -25,16 +23,12 @@ function App() {
           </Route>
           <Route path='/about' element={<About />} />
           <Route path='/user'>
-            <Route index element={<ProfileHome />} />
+            <Route index element={<UserHome />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
           </Route>
-          <Route path="/blog">
-            <Route index element={<BlogHome />} />
-            <Route path='newpost' element={<WriteBlog />} />
-            <Route path='post/:id' element={<BlogPost />} />
-            <Route path='post/:id/edit' element={<BlogEdit />} />
-          </Route>
+          <Route path='newpost' element={<WriteBlog />} />
+          <Route path='post/:id' element={<BlogPost />} />
         </Routes>
         <Footer />
       </BrowserRouter>

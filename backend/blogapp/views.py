@@ -49,9 +49,9 @@ class BlogDetailView(APIView):
             # blog.views += 1
             # blog.save()
             serializer = BlogSerializer(blog)
-            data = serializer.data
-            data['user'] = blog.user.username
-            return Response(data, status=status.HTTP_200_OK)
+            # data = serializer.data
+            # data['user'] = blog.user.username
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Blog.DoesNotExist:
             return Response({'message': 'Blog not found'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
@@ -66,10 +66,10 @@ class BlogDetailView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        blog = self.get_object(pk)
-        blog.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    # def delete(self, request, pk):
+    #     blog = self.get_object(pk)
+    #     blog.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 # class BlogUpdateView(generics.UpdateAPIView):
 #     queryset = Blog.objects.all()
@@ -99,7 +99,7 @@ class BlogUpdateView(APIView):
 
 
 class BlogListView(generics.ListAPIView):
-    queryset = Blog.objects.all()
+    queryset = Blog.objects.filter(status="published").order_by("-created_at")
     serializer_class = BlogListSerializer
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # authentication_classes = [JWTAuthentication]
@@ -116,7 +116,6 @@ class BlogListView(generics.ListAPIView):
 
 
 class TagListView(APIView):
-
     def get(self, request):
         tags = Tag.objects.all()
         serializer = TagSerializer(tags, many=True)
@@ -134,11 +133,30 @@ class GetBlogByTag(generics.ListAPIView):
 
 class SearchBlogView(generics.ListAPIView):
     serializer_class = BlogListSerializer
-
     def get_queryset(self):
         search_query = self.request.query_params.get('query', '')
         queryset = Blog.objects.filter(title__icontains=search_query)
         return queryset
+    
+class MyBlogListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = BlogListSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Blog.objects.filter(user=user, status="published").order_by("-created_at")
+
+class MyDraftBlogListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = BlogListSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Blog.objects.filter(user=user, status="draft").order_by("-created_at")
+
+
 
 
 

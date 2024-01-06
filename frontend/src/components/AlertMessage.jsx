@@ -1,7 +1,9 @@
 import React from 'react';
 
 const AlertMessage = ({ type, message }) => {
+
   let alertClass = '';
+
 
   switch (type) {
     case 'primary':

@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useNavigate} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import logo from '../static/images/logo2.png';
 import '../static/css/Navbar.css';
@@ -50,15 +50,10 @@ const Navbar = () => {
                   About
                 </NavLink>
               </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/blog">
-                  Blog
-                </NavLink>
-              </li>
             </ul>
             <ul className="navbar-nav ml-auto">
               <li>
-                <NavLink className="nav-link" to="/blog/newpost">
+                <NavLink className="nav-link" to="/newpost">
                   Write
                 </NavLink>
               </li>
@@ -71,10 +66,9 @@ const Navbar = () => {
                   </a>
                   <ul
                     className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" >
-                    <li><a className="dropdown-item" href="/user/profile"> Account</a></li>
-                    <li><a className="dropdown-item" href="/"> Settings</a></li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li><button className="dropdown-item" onClick={handleLogout}> Log Out</button></li>
+                    <NavLink className="dropdown-item" to={"/user"}>Account</NavLink>
+                    <hr className="dropdown-divider" />
+                    <button className="dropdown-item" onClick={handleLogout}> Log Out</button>
                   </ul>
                 </li>
               ) : (

@@ -6,6 +6,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import SignupSerializer
+from datetime import timedelta
+from django.utils import timezone
 # Create your views here.
 
 
@@ -33,6 +35,8 @@ class UserLogoutView(APIView):
                refresh_token = request.data["refresh_token"]
             #    print(refresh_token)
                token = RefreshToken(refresh_token)
+               token.access_token.lifetime = timedelta(seconds=1)
+               token.access_token.set_exp = timezone.now()
                token.blacklist()
                return Response(status=status.HTTP_205_RESET_CONTENT)
           except Exception as e:

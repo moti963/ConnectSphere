@@ -34,7 +34,7 @@ const BlogPost = () => {
     return (
         <div className="container my-5">
             <h2>{blog.title}</h2>
-            <p className="text-muted">by {blog.user} | {blog.created_at}</p>
+            <p className="text-muted">by {blog.username} | {blog.created_at}</p>
             <p className="text-muted">Views: {blog.views}</p>
             <p>{blog.description}</p>
             <p>Tags: {blog.tags.map(tag => <button key={tag.id} className="btn btn-info m-2">{tag.tag}</button>)}</p>
