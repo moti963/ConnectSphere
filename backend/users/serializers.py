@@ -26,12 +26,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = '__all__'
         extra_kwargs = {
-            'profile_img': {'required': True},
+            'profile_img': {'required': False, 'allow_null': True},
             'bio': {'required': True, 'allow_blank': False},
             'location': {'required': True, 'allow_blank': False},
             'birth_date': {'required': True, 'allow_null': False},
             'gender': {'required': True, 'allow_blank': False},
-            'website': {'required': True, 'allow_blank': False},
+            'website': {'required': False, 'allow_blank': True},
         }
     # def get_profile_img_url(self, obj):
     #     request = self.context.get('request')
@@ -44,13 +44,11 @@ class UserContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserContact
         fields = '__all__'
-
         extra_kwargs = {
-            'school_clg': {'required': True, 'allow_blank': False},
-            'degree': {'required': True, 'allow_blank': False},
-            'field_of_study': {'required': True, 'allow_blank': False},
-            'graduation_year': {'required': True, 'allow_blank': False},
+            'email': {'required': True, 'allow_blank': False},
+            'phone_number': {'required': True, 'allow_blank': False},
         }
+
 
 
 class UserEducationSerializer(serializers.ModelSerializer):
@@ -58,8 +56,10 @@ class UserEducationSerializer(serializers.ModelSerializer):
         model = UserEducation
         fields = '__all__'
         extra_kwargs = {
-            'email': {'required': True, 'allow_blank': False},
-            'phone_number': {'required': True, 'allow_blank': False},
+            'school_clg': {'required': True, 'allow_blank': False},
+            'degree': {'required': True, 'allow_blank': False},
+            'field_of_study': {'required': True, 'allow_blank': False},
+            'graduation_year': {'required': True, 'allow_null': False},
         }
 
 

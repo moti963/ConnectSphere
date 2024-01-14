@@ -36,6 +36,10 @@ const UserProjectDisplay = () => {
         setIsAddingNewProject(false);
     }
 
+    const handleAlertClose = () => {
+        setAlertMessage(null);
+    }
+
     const handleDeleteProject = async (project) => {
         if (window.confirm("Are you sure you want to delete this Project?")) {
             try {
@@ -55,9 +59,9 @@ const UserProjectDisplay = () => {
         <div className="container mt-3">
 
             {/* Conditionally render the form for editing or adding a new Project */}
-            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleAlertClose} />}
             {(selectedProject || isAddingNewProject) && (
-                <UserProjectForm initialFormData={selectedProject} />
+                <UserProjectForm initialFormData={selectedProject} onSubmit={fetchUseProjects} />
             )}
             {!selectedProject && !isAddingNewProject && projects ? (
                 <div className="row">

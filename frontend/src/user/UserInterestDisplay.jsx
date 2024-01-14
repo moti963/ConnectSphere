@@ -40,10 +40,14 @@ const UserInterestDisplay = () => {
         setIsAddingNewInterest(false);
     }
 
+    const handleAlertClose = () => {
+        setAlertMessage(null);
+    }
+
     const handleDeleteInterest = async (interest) => {
         if (window.confirm("Are you sure you want to delete this interest?")) {
             try {
-                // await UserAPI.deleteUserInterest(interest.id);
+                await UserAPI.deleteUserInterest(interest.id);
                 setInterests((prevInterests) =>
                     prevInterests.filter((c) => c.id !== interest.id)
                 );
@@ -58,9 +62,10 @@ const UserInterestDisplay = () => {
     return (
         <div className="container mt-3">
             {/* Conditionally render the form for editing or adding a new Interest */}
-            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleAlertClose} />}
+
             {(selectedInterest || isAddingNewInterest) && (
-                <UserInterestForm initialFormData={selectedInterest} />
+                <UserInterestForm initialFormData={selectedInterest} onSubmit={fetchUserInterests} />
             )}
 
             {!selectedInterest && !isAddingNewInterest && interests ?

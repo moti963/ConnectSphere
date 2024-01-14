@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser
+from django.core.files.base import ContentFile
 # Create your views here.
 
 class UserView(APIView):
@@ -39,20 +41,36 @@ class UserView(APIView):
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+    parser_classes = [MultiPartParser]
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs['context'] = {'request': self.request}
+        return UserProfileSerializer(*args, **kwargs)
 
     def get(self, request):
         user_profile = get_object_or_404(UserProfile, user=request.user)
-        serializer = UserProfileSerializer(user_profile, context={'request': request})
+        serializer = UserProfileSerializer(user_profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
-        user_profile = get_object_or_404(UserProfile, user=request.user)
-        serializer = UserProfileSerializer(user_profile, data=request.data, context={'request': request})
+        # print(request.data)
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        serializer = UserProfileSerializer(user_profile, data=request.data)
+        # print(serializer)
+        # print(request.data)
         if serializer.is_valid():
+            # print(request.data['profile_img'])
+            if not request.data.get('profile_img'):
+                serializer.validated_data.pop('profile_img', None)
+            else:
+                img_data = request.data['profile_img'].read()
+                user_profile.profile_img.save(request.data['profile_img'].name, ContentFile(img_data))
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            message = "Profile created successfully" if created else "Profile updated successfully"
+            return Response({'message': message}, status=status.HTTP_202_ACCEPTED)
+        else:
+            # print(serializer.errors)
+            return Response({"error": str(serializer.error_messages)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserContactView(APIView):
@@ -66,13 +84,14 @@ class UserContactView(APIView):
     
     def post(self, request):
         try:
-            serializer = UserContactSerializer(user=request.user, data=request.data)
+            serializer = UserContactSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
+                serializer.save(user=request.user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
-                return Response({'error': 'Invalid data provided', 'details': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            # print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, pk):

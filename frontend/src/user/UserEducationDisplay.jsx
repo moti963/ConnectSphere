@@ -7,7 +7,7 @@ const UserEducationDisplay = () => {
   const [educations, setEducations] = useState(null);
   const [selectedEducation, setSelectedEducation] = useState(null);
   const [isAddingNewEducation, setIsAddingNewEducation] = useState(false);
-  const [alert, setAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(false);
 
   const fetchUserEducations = async () => {
     try {
@@ -15,21 +15,21 @@ const UserEducationDisplay = () => {
       setEducations(response);
     } catch (error) {
       console.log(error.message);
-      setAlert({ type: "danger", message: "Unable to load education details." });
+      setAlertMessage({ type: "danger", message: "Unable to load education details." });
     }
   };
 
   const handleDeleteEducation = async (education) => {
     if (window.confirm("Are you sure you want to delete this education?")) {
       try {
-        // await UserAPI.deleteUserContact(education.id);
+        await UserAPI.deleteUserEducation(education.id);
         setEducations((prevEducations) =>
           prevEducations.filter((e) => e.id !== education.id)
         );
-        setAlert({ type: "success", message: "Contact deleted successfully." });
+        setAlertMessage({ type: "success", message: "Contact deleted successfully." });
       } catch (error) {
         console.log(error.message);
-        setAlert({ type: "danger", message: "Unable to delete the education." });
+        setAlertMessage({ type: "danger", message: "Unable to delete the education." });
       }
     }
   };
@@ -53,16 +53,20 @@ const UserEducationDisplay = () => {
     setIsAddingNewEducation(false);
   }
 
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
+  }
+
   return (
     <div className="container mt-3">
-      {alert && <AlertMessage type={alert.type} message={alert.message} />}
+      {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
 
-      {(selectedEducation || isAddingNewEducation) && (<UserEduactionForm initialFormData={selectedEducation} />)}
+      {(selectedEducation || isAddingNewEducation) && (<UserEduactionForm initialFormData={selectedEducation} onSubmit={fetchUserEducations} />)}
 
       {!selectedEducation && !isAddingNewEducation && educations ? (
         <div className="row">
           {educations.map((education, index) => (
-            <div key={index} className="col-md-4 mb-4">
+            <div key={index} className="col-md-6 mb-4">
               <div className="card">
                 <div className="card-body">
                   <p className="card-text"><strong>School/College:</strong> {education.school_clg}</p>

@@ -36,10 +36,14 @@ const UserWorkExperienceDisplay = () => {
     setIsAddingNewExperience(false);
   }
 
+  const handleAlertClose = () => {
+    setAlertMessage(null);
+  }
+
   const handleDeleteExperience = async (experience) => {
     if (window.confirm("Are you sure you want to delete this experience?")) {
       try {
-        // await UserAPI.deleteUserExperience(experience.id);
+        await UserAPI.deleteUserExperience(experience.id);
         setExperiences((prevExperiences) =>
           prevExperiences.filter((e) => e.id !== experience.id)
         );
@@ -54,15 +58,16 @@ const UserWorkExperienceDisplay = () => {
   return (
     <div className="container mt-3">
       {/* Conditionally render the form for editing or adding a new Experience */}
-      {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+      {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleAlertClose} />}
+
       {(selectedExperience || isAddingNewExperience) && (
-        <UserWorkExperienceForm initialFormData={selectedExperience} />
+        <UserWorkExperienceForm initialFormData={selectedExperience} onSubmit={fetchUserExperiences} />
       )}
 
       {!selectedExperience && !isAddingNewExperience && experiences ? (
         <div className="row">
           {experiences.map((experience, index) => (
-            <div key={index} className="col-md-4 mb-4">
+            <div key={index} className="col-md-6 mb-4">
               <div className="card">
                 <div className="card-body">
                   <p>Company: {experience.company_name}</p>

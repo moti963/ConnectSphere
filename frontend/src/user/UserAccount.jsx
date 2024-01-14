@@ -68,10 +68,14 @@ const UserAccount = () => {
         });
     };
 
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
     return (
         <div className="container mt-5">
             {loading && <p className="text-center">Loading account...</p>}
-            {alertMessage && (<AlertMessage type={alertMessage.type} message={alertMessage.message} />)}
+            {alertMessage && (<AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />)}
             {account && (
                 <div className="card shadow">
                     <div className="card-header bg-primary text-white">
@@ -79,12 +83,12 @@ const UserAccount = () => {
                     </div>
                     <div className="card-body">
                         {!editMode && (
-                            <div className="mb-4">
+                            <div className="mb-2">
                                 <h3 className="mb-3">Welcome, {account.username}!</h3>
                                 <p>Email: {account.email}</p>
                                 <p>Name: {`${account.first_name} ${account.last_name}`}</p>
                                 <button
-                                    className="btn btn-primary"
+                                    className="btn btn-sm btn-primary"
                                     onClick={handleEditClick}
                                 >
                                     Edit Account
@@ -144,13 +148,13 @@ const UserAccount = () => {
                                 </div>
                                 <div className="mb-3">
                                     <button
-                                        className="btn btn-secondary me-2"
+                                        className="btn btn-sm btn-secondary m-2"
                                         onClick={handleCancelClick}
                                     >
                                         Cancel
                                     </button>
                                     <button
-                                        className="btn btn-primary"
+                                        className="btn btn-sm btn-primary m-2"
                                         type='submit'
                                     >
                                         Save Changes

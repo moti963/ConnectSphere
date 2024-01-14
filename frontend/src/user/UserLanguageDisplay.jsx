@@ -37,10 +37,15 @@ const UserLanguageDisplay = () => {
         setIsAddingNewLanguage(false);
     }
 
+
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
     const handleDeleteLanguage = async (language) => {
         if (window.confirm("Are you sure you want to delete this Language?")) {
             try {
-                // await UserAPI.deleteUserLanguage(Language.id);
+                await UserAPI.deleteUserLanguage(language.id);
                 setLanguages((prevLanguages) =>
                     prevLanguages.filter((l) => l.id !== language.id)
                 );
@@ -54,9 +59,10 @@ const UserLanguageDisplay = () => {
 
     return (
         <div className="container mt-3">
-            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
             {(selectedLanguage || isAddingNewLanguage) && (
-                <UserLanguageForm initialFormData={selectedLanguage} />
+                <UserLanguageForm initialFormData={selectedLanguage} onSubmit={fetchUserLanguages} />
             )}
 
             {!selectedLanguage && !isAddingNewLanguage &&

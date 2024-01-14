@@ -40,10 +40,14 @@ const UserContactDisplay = () => {
     setIsAddingNewContact(false);
   }
 
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
+  }
+
   const handleDeleteContact = async (contact) => {
     if (window.confirm("Are you sure you want to delete this contact?")) {
       try {
-        // await UserAPI.deleteUserContact(contact.id);
+        await UserAPI.deleteUserContact(contact.id);
         setContacts((prevContacts) =>
           prevContacts.filter((c) => c.id !== contact.id)
         );
@@ -59,9 +63,9 @@ const UserContactDisplay = () => {
     <div className="container mt-5">
 
       {/* Conditionally render the form for editing or adding a new contact */}
-      {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+      {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
       {(selectedContact || isAddingNewContact) && (
-        <UserContactForm initialFormData={selectedContact} />
+        <UserContactForm initialFormData={selectedContact} onSubmit={fetchUserContact} />
       )}
 
       {/* Display the contacts only if neither editing nor adding new contact is in progress */}

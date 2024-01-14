@@ -8,15 +8,22 @@ class UserAPI {
     static baseUrl = "http://127.0.0.1:8000/users";
 
 
-    static async sendRequest(url, method, body) {
+    static async sendRequest(url, method, body, isFileUpload = false) {
         try {
+            const headers = {
+                'Authorization': `JWT ${cookie.get("access_token")}`
+            };
+
+            if (isFileUpload) {
+                headers['Content-Type'] = 'multipart/form-data';
+            } else {
+                headers['Content-Type'] = 'application/json';
+            }
+
             const response = await axios({
                 method: method,
                 url: `${this.baseUrl}/${url}/`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `JWT ${cookie.get("access_token")}`
-                },
+                headers: headers,
                 data: body
             });
             // console.log(response);
@@ -68,7 +75,7 @@ class UserAPI {
     }
 
     static async updateUserProfile(body) {
-        return this.sendRequest('profile', 'put', body);
+        return this.sendRequest('profile', 'put', body, true);
     }
 
     //UserContacts
@@ -163,6 +170,10 @@ class UserAPI {
 
     static async addUserCertification(body) {
         return this.sendRequest('certifications', 'post', body);
+    }
+
+    static async updateUserCertification(id, body) {
+        return this.sendRequest(`certifications/${id}`, 'put', body);
     }
 
     static async deleteUserCertification(id) {

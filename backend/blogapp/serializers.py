@@ -4,6 +4,13 @@ from rest_framework import serializers
 from .models import Blog, BlogContent, Tag
 from django.db import transaction
 from django.contrib.auth.models import User
+from users.models import UserProfile
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['profile_img']
 
 
 class BlogContentSerializer(serializers.ModelSerializer):
@@ -45,12 +52,20 @@ class BlogListSerializer(serializers.ModelSerializer):
     # Format the created_at field
     created_at = serializers.DateTimeField(format="%d-%B-%Y %I:%M %p")
     username = serializers.CharField(source="user.username", read_only=True)
-    
+    profile_img = serializers.SerializerMethodField()
+
     class Meta:
         model = Blog
-        fields = ['id', 'user', 'username', 'title', 'description', 'tags', 'views', 'created_at']
+        fields = ['id', 'user', 'username', 'profile_img', 'title', 'thumbnail', 'description', 'tags', 'views', 'created_at']
         read_only_fields = ['user', 'views', 'created_at']
 
+    def get_profile_img(self, obj):
+        user = obj.user
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+            return user_profile.profile_img.url if user_profile.profile_img else None
+        except UserProfile.DoesNotExist:
+            return None
 
 class BlogListTagSerializer(serializers.ModelSerializer):
     # Format the created_at field

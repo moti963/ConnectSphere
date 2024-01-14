@@ -17,6 +17,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await BlogAPI.getAllTags();
+        // console.log(response.data);
         setAllTags(response.data);
 
         if (selectedTag === null) {

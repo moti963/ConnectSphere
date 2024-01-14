@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import AlertMessage from '../components/AlertMessage';
+import UserAPI from '../user/UserAPI';
 
-const UserContactForm = ({ initialFormData }) => {
+const UserContactForm = ({ initialFormData, onSubmit }) => {
     const [formData, setFormData] = useState(initialFormData || {
         email: '',
         phone_number: '',
     });
     const [alertMessage, setAlertMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         setFormData(initialFormData || { email: '', phone_number: '' });
     }, [initialFormData]);
@@ -16,26 +19,45 @@ const UserContactForm = ({ initialFormData }) => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        // console.log("data : ", formData);
+        try {
+            if (initialFormData && initialFormData.id) {
+                await UserAPI.updateUserContact(initialFormData.id, formData);
+                setAlertMessage({ type: "success", message: "Updated successfully" })
+            }
+            else {
+                await UserAPI.addUserContact(formData);
+                setAlertMessage({ type: "success", message: "Added successfully" })
+            }
+            onSubmit();
+            setFormData({ email: '', phone_number: '' });
+        } catch (error) {
+            // console.log(error);
+            setAlertMessage({
+                type: "danger",
+                message: error.response?.data?.message || "An error occurred. Please try again.",
+            });
 
-        if (initialFormData && initialFormData.id) {
-            setAlertMessage({ type: "success", message: "Updated successfully" })
+        } finally {
+            setLoading(false);
         }
-        else {
-            setAlertMessage({ type: "success", message: "Added successfully" })
-        }
-
     };
 
     return (
         <div className="container mt-3">
             {alertMessage &&
-                <AlertMessage type={alertMessage.type} message={alertMessage.message} />
+                <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />
             }
             <div className="card shadow">
                 <div className="card-header bg-primary text-white">
-                    <h2>{initialFormData ? 'Edit' : 'Add'} Contact Info</h2>
+                    <h2>{initialFormData ? 'Edit contact info' : 'Add new contact'}</h2>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleSubmit}>
@@ -48,6 +70,8 @@ const UserContactForm = ({ initialFormData }) => {
                                 className="form-control"
                                 value={formData.email}
                                 onChange={handleChange}
+                                maxLength={255}
+                                required
                             />
                         </div>
                         <div className="form-group">
@@ -59,11 +83,15 @@ const UserContactForm = ({ initialFormData }) => {
                                 className="form-control"
                                 value={formData.phone_number}
                                 onChange={handleChange}
+                                minLength={10}
+                                maxLength={15}
+                                required
                             />
                         </div>
-                        <button type="submit" className="btn btn-sm btn-primary m-2">
+
+                        {loading ? "Submitting..." : (<button type="submit" className="btn btn-sm btn-primary m-2">
                             {initialFormData ? 'Save Changes' : 'Add Contact'}
-                        </button>
+                        </button>)}
                     </form>
                 </div>
             </div>

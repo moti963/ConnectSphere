@@ -15,7 +15,7 @@ const UserSocialMediaDisplay = () => {
             const response = await UserAPI.getUserSocialMedia();
             setSocialMedia(response);
         } catch (error) {
-            console.log(error.messages);
+            // console.log(error.messages);
             setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
         }
     }
@@ -36,10 +36,14 @@ const UserSocialMediaDisplay = () => {
         setIsAddingNewMedia(false);
     }
 
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
     const handleDeleteMedia = async (media) => {
         if (window.confirm("Are you sure you want to delete this media?")) {
             try {
-                // await UserAPI.deleteUserMedia(media.id);
+                await UserAPI.deleteUserSocialMedia(media.id);
                 setSocialMedia((prevSocialMedia) =>
                     prevSocialMedia.filter((m) => m.id !== media.id)
                 );
@@ -55,14 +59,16 @@ const UserSocialMediaDisplay = () => {
         <div className="container mt-3">
 
             {/* Conditionally render the form for editing or adding a new Media */}
-            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
             {(selectedMedia || isAddingNewMedia) && (
-                <UserSocialMediaForm initialFormData={selectedMedia} />
+                <UserSocialMediaForm initialFormData={selectedMedia} onSubmit={fetchUserSocialMedia} />
             )}
+
             {!selectedMedia && !isAddingNewMedia && socialMedia ? (
-                <div className="row">
+                <div className="row row-cols-1 row-cols-md-3 g-4">
                     {socialMedia.map((media, index) => (
-                        <div key={index} className="col-md-4 mb-4">
+                        <div key={index} className="col-md-4 mb-4 col">
                             <div className="card">
                                 <div className="card-body">
                                     <p>Media: {media.media}</p>
@@ -91,7 +97,7 @@ const UserSocialMediaDisplay = () => {
             {/* Button to trigger adding a new Media */}
             {!isAddingNewMedia && (
                 <button
-                    className="btn btn-sm btn-success mx-2 mt-3"
+                    className="btn btn-sm btn-success m-2"
                     onClick={handleAddNewMedia}
                 >
                     Add New Media
@@ -99,7 +105,7 @@ const UserSocialMediaDisplay = () => {
             )}
             {(selectedMedia || isAddingNewMedia) && (
                 <button
-                    className="btn btn-sm btn-secondary mx-2 mt-3"
+                    className="btn btn-sm btn-secondary m-2"
                     onClick={handleCancelClick}
                 >
                     Cancel

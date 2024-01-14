@@ -112,7 +112,24 @@ class AuthAPI {
             // console.log(error.message);
             throw error;
         }
+    }
 
+    static async changePassword(body) {
+        try {
+            const access_token = cookie.get("access_token");
+            const response = await axios.post(`${this.baseUrl}/change-password/`, body, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `JWT ${access_token}`
+                }
+            });
+            // console.log(response);
+            return response;
+        } catch (error) {
+            console.log(error);
+            // console.log(error.message);
+            throw error;
+        }
     }
 };
 

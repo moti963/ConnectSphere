@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import AlertMessage from '../components/AlertMessage';
+import UserAPI from '../user/UserAPI';
 
-const UserSkillForm = ({ initialFormData }) => {
+const UserSkillForm = ({ initialFormData, onSubmit }) => {
     const [formData, setFormData] = useState(initialFormData || {
         skill_name: '',
-        proficiency_level: '',
+        proficiency_level: 'beginner',
     });
-    const [alert, setAlert] = useState(null);
+    const [alertMessage, setAlertMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setFormData(initialFormData || { skill_name: '', proficiency_level: '' });
+        setFormData(initialFormData || { skill_name: '', proficiency_level: 'beginner' });
     }, [initialFormData])
 
     const handleChange = (e) => {
@@ -18,23 +20,40 @@ const UserSkillForm = ({ initialFormData }) => {
     };
 
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Call onSubmit with the form data
-        // onSubmit(formData);
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
 
-        if (initialFormData && initialFormData.id) {
-            setAlert({ type: "success", message: "Updated successfully" })
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            if (initialFormData && initialFormData.id) {
+                await UserAPI.updateUserSkill(initialFormData.id, formData);
+                setAlertMessage({ type: "success", message: "Updated successfully" })
+            }
+            else {
+                await UserAPI.addUserSkill(formData);
+                setAlertMessage({ type: "success", message: "Added successfully" })
+            }
+            onSubmit();
+            setFormData({ skill_name: '', proficiency_level: 'beginner' });
+        } catch (error) {
+            // console.error(error);
+            setAlertMessage({
+                type: "danger",
+                message: error.response?.data?.message || "An error occurred. Please try again.",
+            });
+        } finally {
+            setLoading(false);
         }
-        else {
-            setAlert({ type: "success", message: "Added successfully" })
-        }
+
     };
 
     return (
         <div className="container mt-3">
-            {alert &&
-                <AlertMessage type={alert.type} message={alert.message} />
+            {alertMessage &&
+                <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />
             }
             <div className="card shadow">
                 <div className="card-header bg-primary text-white">
@@ -52,22 +71,31 @@ const UserSkillForm = ({ initialFormData }) => {
                                 className="form-control"
                                 value={formData.skill_name}
                                 onChange={handleChange}
+                                maxLength={255}
+                                required
                             />
                         </div>
                         <div className="form-group">
                             <label htmlFor="proficiency_level">Proficiency Level:</label>
-                            <input
-                                type="text"
+                            <select
                                 id="proficiency_level"
                                 name="proficiency_level"
                                 className="form-control"
                                 value={formData.proficiency_level}
                                 onChange={handleChange}
-                            />
+                                required
+                            >
+                                <option value="beginner">Beginner</option>
+                                <option value="elementary">Elementary</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                                <option value="fluent">Fluent</option>
+                                <option value="native">Native</option>
+                            </select>
                         </div>
-                        <button type="submit" className="btn btn-sm btn-primary m-2">
+                        {loading ? "Submitting..." : (<button type="submit" className="btn btn-sm btn-primary m-2">
                             {initialFormData ? 'Save Changes' : 'Add Skill'}
-                        </button>
+                        </button>)}
                     </form>
                 </div>
             </div>

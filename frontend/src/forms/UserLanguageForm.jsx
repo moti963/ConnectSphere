@@ -1,41 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import AlertMessage from '../components/AlertMessage';
+import UserAPI from '../user/UserAPI';
 
-const UserLanguageForm = ({ initialFormData }) => {
+const UserLanguageForm = ({ initialFormData, onSubmit }) => {
     const [formData, setFormData] = useState(initialFormData || {
         language_name: '',
-        proficiency_level: 'INTERMEDIATE',
+        proficiency_level: 'beginner'
     });
 
-    const [alert, setAlert] = useState(null);
+    const [alertMessage, setAlertMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => { setFormData(initialFormData || { language_name: '', proficiency_level: '' }); }, [initialFormData]);
+
+    useEffect(() => { setFormData(initialFormData || { language_name: '', proficiency_level: 'beginner' }); }, [initialFormData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Call onSubmit with the form data
-        // onSubmit(formData);
-        if (initialFormData && initialFormData.id) {
-            setAlert({ type: "success", message: "Updated successfully" })
-        }
-        else {
-            setAlert({ type: "success", message: "Added successfully" })
+        setLoading(true);
+        try {
+            if (initialFormData && initialFormData.id) {
+                await UserAPI.updateUserLanguage(initialFormData.id, formData);
+                setAlertMessage({ type: "success", message: "Updated successfully" })
+            }
+            else {
+                await UserAPI.addUserLanguage(formData);
+                setAlertMessage({ type: "success", message: "Added successfully" })
+            }
+            onSubmit();
+            setFormData({
+                language_name: '',
+                proficiency_level: 'beginner'
+            });
+        } catch (error) {
+            // console.error(error);
+            setAlertMessage({
+                type: "danger",
+                message: error.response?.data?.message || "An error occurred. Please try again.",
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="container mt-3">
-            {alert &&
-                <AlertMessage type={alert.type} message={alert.message} />
+            {alertMessage &&
+                <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />
             }
             <div className="card shadow">
                 <div className="card-header bg-primary text-white">
-                    <h2>{initialFormData ? 'Edit' : 'Add'} Language Info</h2>
+                    <h2>{initialFormData ? 'Edit language info' : 'Add new language'} </h2>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleSubmit}>
@@ -48,6 +71,8 @@ const UserLanguageForm = ({ initialFormData }) => {
                                 className="form-control"
                                 value={formData.language_name}
                                 onChange={handleChange}
+                                maxLength={255}
+                                required
                             />
                         </div>
                         <div className="form-group">
@@ -58,6 +83,7 @@ const UserLanguageForm = ({ initialFormData }) => {
                                 className="form-control"
                                 value={formData.proficiency_level}
                                 onChange={handleChange}
+                                required
                             >
                                 <option value="beginner">Beginner</option>
                                 <option value="elementary">Elementary</option>
@@ -67,9 +93,9 @@ const UserLanguageForm = ({ initialFormData }) => {
                                 <option value="native">Native</option>
                             </select>
                         </div>
-                        <button type="submit" className="btn btn-sm btn-primary m-2">
+                        {loading ? "Submitting..." : (<button type="submit" className="btn btn-sm btn-primary m-2">
                             {initialFormData ? 'Save Changes' : 'Add Language'}
-                        </button>
+                        </button>)}
                     </form>
                 </div>
             </div>

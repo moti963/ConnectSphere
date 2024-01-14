@@ -29,7 +29,7 @@ class Blog(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # username = models.CharField(default="", max_length=150)
+    thumbnail = models.ImageField(upload_to="thumbnail/", null=True, blank=True, default=None)
     title = models.CharField(max_length=255, blank=False, null=False, default="")
     description = models.TextField(max_length=500, blank=False, null=False, default="")
     content = models.ForeignKey(BlogContent, related_name="blogs", on_delete=models.CASCADE)

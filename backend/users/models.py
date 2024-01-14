@@ -8,12 +8,12 @@ class UserProfile(models.Model):
         Male = 'male', 'Male'
         Female = 'female', 'Female'
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    profile_img = models.ImageField(upload_to="profile/", default="")
+    profile_img = models.ImageField(upload_to="profile/", null=True, blank=True, default="")
     bio = models.TextField(max_length=1000, null=False, blank=False, default="")
     location = models.CharField(max_length=255, null=False, blank=False, default="")
     birth_date = models.DateField(null=False, blank=False)
     gender = models.CharField(max_length=15, choices=Gender.choices, default=Gender.Male, null=False, blank=False)
-    website = models.URLField(max_length=255, null=False, blank=False, default="")
+    website = models.URLField(max_length=255, null=True, blank=True, default="")
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

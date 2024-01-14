@@ -9,7 +9,7 @@ const BlogList = ({ blogs }) => {
                 {blogs && blogs.map(blog => (
                     <div key={blog.id} className="col-md-6 mb-4">
                         <div className="card h-100">
-                            {blog.image && <img src={blog.image} className="card-img-top" alt={blog.title} />}
+                            {blog.thumbnail && <img src={"http://127.0.0.1:8000/" + blog.thumbnail} className="card-img-top" alt={blog.title} />}
                             <div className="card-body">
                                 <h5 className="card-title">
                                     <Link to={`/post/${blog.id}`}>{blog.title}</Link>
@@ -19,7 +19,8 @@ const BlogList = ({ blogs }) => {
                             <div className="card-footer d-flex justify-content-between align-items-center">
                                 <div className="author">
                                     <Link to={`/profile/${blog.username}`}>
-                                        <img src={logo} alt={blog.user} className="author-avatar" />
+                                        <img src={("http://127.0.0.1:8000/" + blog.profile_img) || logo} alt={blog.user} className="rounded-circle img-thumbnail mb-3"
+                                            style={{ maxWidth: '42px', height: 'auto' }} />
                                         <span className="ml-2">{blog.username}</span>
                                     </Link>
                                 </div>

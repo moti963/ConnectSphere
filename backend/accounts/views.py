@@ -4,10 +4,12 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from rest_framework import status
-from .serializers import SignupSerializer
+from rest_framework import status, serializers
+from .serializers import SignupSerializer, ChangePasswordSerializer
 from datetime import timedelta
 from django.utils import timezone
+from django.contrib.auth import update_session_auth_hash
+
 # Create your views here.
 
 
@@ -41,3 +43,28 @@ class UserLogoutView(APIView):
                return Response(status=status.HTTP_205_RESET_CONTENT)
           except Exception as e:
                return Response(status=status.HTTP_400_BAD_REQUEST)
+          
+
+class UserChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            serializer = ChangePasswordSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            
+            user = request.user
+            data = serializer.validated_data
+
+            if not user.check_password(data['password']):
+                return Response({'error': ['Wrong password.']}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(data['new_password'])
+            user.save()
+            update_session_auth_hash(request, user)
+            return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+        except serializers.ValidationError as e:
+            return Response({'error': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)

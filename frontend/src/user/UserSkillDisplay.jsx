@@ -36,10 +36,14 @@ const UserSkillDisplay = () => {
     setIsAddingNewSkill(false);
   }
 
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
+  }
+
   const handleDeleteSkill = async (skill) => {
     if (window.confirm("Are you sure you want to delete this skill?")) {
       try {
-        // await UserAPI.deleteUserSkill(skill.id);
+        await UserAPI.deleteUserSkill(skill.id);
         setSkills((prevSkills) =>
           prevSkills.filter((s) => s.id !== skill.id)
         );
@@ -54,9 +58,10 @@ const UserSkillDisplay = () => {
   return (
     <div className="container mt-3">
 
-      {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+      {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
       {(selectedSkill || isAddingNewSkill) && (
-        <UserSkillForm initialFormData={selectedSkill} />
+        <UserSkillForm initialFormData={selectedSkill} onSubmit={fetchUserSkills} />
       )}
 
       {!isAddingNewSkill && !selectedSkill && skills ? (
@@ -88,7 +93,7 @@ const UserSkillDisplay = () => {
 
       {!isAddingNewSkill && (
         <button
-          className="btn btn-sm btn-success mx-2 mt-3"
+          className="btn btn-sm btn-success m-2"
           onClick={handleAddNewSkill}
         >
           Add New Skill
@@ -96,7 +101,7 @@ const UserSkillDisplay = () => {
       )}
       {(selectedSkill || isAddingNewSkill) && (
         <button
-          className="btn btn-sm btn-secondary mx-2 mt-3"
+          className="btn btn-sm btn-secondary m-2"
           onClick={handleCancelClick}
         >
           Cancel

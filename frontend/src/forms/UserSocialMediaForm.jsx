@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import AlertMessage from '../components/AlertMessage';
+import UserAPI from '../user/UserAPI';
 
-const UserSocialMediaForm = ({ initialFormData }) => {
+const UserSocialMediaForm = ({ initialFormData, onSubmit }) => {
     const [formData, setFormData] = useState(initialFormData || {
         media: '',
         media_link: '',
     });
     const [alertMessage, setAlertMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setFormData(initialFormData || {
@@ -20,27 +22,47 @@ const UserSocialMediaForm = ({ initialFormData }) => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (initialFormData && initialFormData.id) {
-            setAlertMessage({ type: "success", message: "Updated successfully" })
-        }
-        else {
-            setAlertMessage({ type: "success", message: "Added successfully" })
-        }
+        setLoading(true);
 
+        try {
+            if (initialFormData && initialFormData.id) {
+                await UserAPI.updateUserSocialMedia(initialFormData.id, formData);
+                setAlertMessage({ type: "success", message: "Updated successfully" });
+            } else {
+                await UserAPI.addUserSocialMedia(formData);
+                setAlertMessage({ type: "success", message: "Added successfully" });
+            }
+            onSubmit();
+            setFormData({
+                media: '',
+                media_link: '',
+            });
+        } catch (error) {
+            // console.error(error);
+            setAlertMessage({
+                type: "danger",
+                message: error.response?.data?.message || "An error occurred. Please try again.",
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="container mt-3">
             {alertMessage &&
-                <AlertMessage type={alertMessage.type} message={alertMessage.message} />
+                <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />
             }
             <div className="card shadow">
                 <div className="card-header bg-primary text-white">
-                    <h2>{initialFormData ? 'Edit' : 'Add'} Contact Info</h2>
+                    <h2>{initialFormData ? 'Edit media info' : 'Add new media'}</h2>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleSubmit}>
@@ -52,6 +74,7 @@ const UserSocialMediaForm = ({ initialFormData }) => {
                                 className="form-control"
                                 value={formData.media}
                                 onChange={handleChange}
+                                required
                             >
                                 <option value="instagram">Instagram</option>
                                 <option value="facebook">Facebook</option>
@@ -64,17 +87,19 @@ const UserSocialMediaForm = ({ initialFormData }) => {
                         <div className="form-group">
                             <label htmlFor="media_link">Media Link:</label>
                             <input
+                                maxLength={100}
                                 type="url"
                                 id="media_link"
                                 name="media_link"
                                 className="form-control"
                                 value={formData.media_link}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
-                        <button type="submit" className="btn btn-sm btn-primary m-2">
-                            {initialFormData ? 'Save Changes' : 'Add Contact'}
-                        </button>
+                        {loading ? "Submitting..." : (<button type="submit" className="btn btn-sm btn-primary m-2">
+                            {initialFormData ? 'Save Changes' : 'Add Media'}
+                        </button>)}
                     </form>
                 </div>
             </div>

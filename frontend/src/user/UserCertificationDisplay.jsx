@@ -38,11 +38,14 @@ const UserCertificationDisplay = () => {
         setIsAddingNewCertification(false);
     }
 
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
 
     const handleDeleteCertification = async (certification) => {
         if (window.confirm("Are you sure you want to delete this certification?")) {
             try {
-                // await UserAPI.deleteUserCertification(certification.id);
+                await UserAPI.deleteUserCertification(certification.id);
                 setCertifications((prevCertifications) =>
                     prevCertifications.filter((c) => c.id !== certification.id)
                 );
@@ -57,16 +60,16 @@ const UserCertificationDisplay = () => {
     return (
         <div className="container mt-3">
             {/* Conditionally render the form for editing or adding a new Certification */}
-            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} />}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
             {(selectedCertification || isAddingNewCertification) && (
-                <UserCertificationForm initialFormData={selectedCertification} />
+                <UserCertificationForm initialFormData={selectedCertification} onSubmit={fetchUserCertifications} />
             )}
 
             {/* Display existing certifications */}
             {!selectedCertification && !isAddingNewCertification && certifications ? (
                 <div className="row">
                     {certifications.map((certification, index) => (
-                        <div key={index} className="col-md-4 mb-4">
+                        <div key={index} className="col-md-6 mb-4">
                             <div className="card">
                                 <div className="card-body">
                                     <p>Certification Name: {certification.certification_name}</p>
@@ -95,7 +98,7 @@ const UserCertificationDisplay = () => {
             {/* Button to trigger adding a new Certification */}
             {!isAddingNewCertification && (
                 <button
-                    className="btn btn-sm btn-success mx-2 mt-3"
+                    className="btn btn-sm btn-success m-2"
                     onClick={handleAddNewCertification}
                 >
                     Add New Certification
@@ -103,7 +106,7 @@ const UserCertificationDisplay = () => {
             )}
             {(selectedCertification || isAddingNewCertification) && (
                 <button
-                    className="btn btn-sm btn-secondary mx-2 mt-3"
+                    className="btn btn-sm btn-secondary m-2"
                     onClick={handleCancelClick}
                 >
                     Cancel

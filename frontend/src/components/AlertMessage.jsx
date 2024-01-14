@@ -1,9 +1,7 @@
 import React from 'react';
 
-const AlertMessage = ({ type, message }) => {
-
+const AlertMessage = ({ type, message, onClose }) => {
   let alertClass = '';
-
 
   switch (type) {
     case 'primary':
@@ -28,7 +26,13 @@ const AlertMessage = ({ type, message }) => {
   return (
     <div className={`alert ${alertClass} alert-dismissible fade show`} role="alert">
       {message}
-      <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <button
+        type="button"
+        className="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+        onClick={onClose}
+      ></button>
     </div>
   );
 };
