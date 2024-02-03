@@ -1,6 +1,6 @@
-# BlogApp
+# ConnectSphere
 
-BlogApp is a sophisticated full-stack web application designed to empower users in reading and creating compelling blog posts. The frontend, meticulously crafted with React, delivers a seamless and user-friendly interface, while the robust Django backend effortlessly manages data storage and API operations.
+ConnectSphere is a sophisticated full-stack web application designed to empower users in reading and creating compelling blog posts. The frontend, meticulously crafted with React, delivers a seamless and user-friendly interface, while the robust Django backend effortlessly manages data storage and API operations.
 
 ## Table of Contents
 
@@ -59,13 +59,13 @@ Ensure you have the following tools installed on your machine:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/moti9/BlogApp.git
+   git clone https://github.com/moti9/ConnectSphere.git
 
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd BlogApp
+   cd ConnectSphere
    ```
 3. Install dependencies for frontend:
 
@@ -106,5 +106,5 @@ Ensure you have the following tools installed on your machine:
 --- 
 
 
-© [2023]  🌐️ `{;}` 🧑‍💻️ `{;}`🌐️
+© [2023-2024]  🌐️ `{;}` 🧑‍💻️ `{;}`🌐️
 
