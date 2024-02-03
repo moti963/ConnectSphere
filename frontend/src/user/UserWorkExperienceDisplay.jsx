@@ -64,7 +64,7 @@ const UserWorkExperienceDisplay = () => {
         <UserWorkExperienceForm initialFormData={selectedExperience} onSubmit={fetchUserExperiences} />
       )}
 
-      {!selectedExperience && !isAddingNewExperience && experiences ? (
+      {(!selectedExperience && !isAddingNewExperience && experiences) ? (
         <div className="row">
           {experiences.map((experience, index) => (
             <div key={index} className="col-md-6 mb-4">
@@ -91,6 +91,10 @@ const UserWorkExperienceDisplay = () => {
               </div>
             </div>))}
         </div>) : null}
+
+      {(!selectedExperience && !isAddingNewExperience && (!experiences || experiences.length === 0)) ? (
+        <h1 className='m-2'>No information found, Please add...</h1>
+      ) : null}
 
       {/* Button to trigger adding a new Experience */}
       {!isAddingNewExperience && (

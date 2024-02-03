@@ -12,7 +12,7 @@ const About = () => {
     <div className="container-fluid my-5">
       <div className="row justify-content-center">
         <div className="col-md-12">
-          <div className="card shadow">
+          <div className="px-3">
             <div className="card-body">
               <h2 className="card-title text-center mb-4">About Us</h2>
               <p>
@@ -42,7 +42,7 @@ const About = () => {
               </ul>
               <h4 className="mt-4">Meet Our Team:</h4>
               <div className="row">
-                <div className="col-md-6 mb-4">
+                <div className="col-md-3 mb-4">
                   <div className="card">
                     <img
                       src={logo}
@@ -55,7 +55,7 @@ const About = () => {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 mb-4">
+                <div className="col-md-3 mb-4">
                   <div className="card">
                     <img
                       src={logo}

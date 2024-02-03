@@ -15,6 +15,7 @@ import UserPostBlog from './UserPostBlog';
 import UserAccount from './UserAccount';
 import { useAuth } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import '../static/css/UserHome.css';
 
 const navItems = [
     { id: 'account', label: 'Account', logo: logo },
@@ -36,7 +37,6 @@ const navItems = [
 
 const UserHome = () => {
     const [selectedNavItem, setSelectedNavItem] = useState(navItems[0].id);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
@@ -49,12 +49,9 @@ const UserHome = () => {
 
     const handleNavItemClick = (navItem) => {
         setSelectedNavItem(navItem);
-        setIsDropdownOpen(false);
     };
 
-    const toggleDropdown = () => {
-        setIsDropdownOpen(!isDropdownOpen);
-    };
+
 
     const renderProfileContent = () => {
         switch (selectedNavItem) {
@@ -78,41 +75,31 @@ const UserHome = () => {
     };
 
     return (
-        <div className="container-fluid my-2 d-flex flex-wrap">
-            <div className={`dropdown ${isDropdownOpen ? 'open' : ''}`}>
-                <button
-                    className="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    onClick={toggleDropdown}
-                >
-                    Profile Menu
-                </button>
-                <ul
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton"
-                >
-                    {navItems.map((item) => (
-                        <li key={item.id}>
+
+        <>
+            <header className="navbar navbar-expand-lg bg-body-tertiary bg-dark p-3" data-bs-theme="dark">
+                <div className="nav-underline d-flex scrollmenu">
+                    {navItems &&
+                        navItems.map((item) => (
                             <span
-                                className={`dropdown-item ${selectedNavItem === item.id ? 'active' : ''}`}
+                                key={item.id}
+                                className={`mx-2 btn nav-item nav-link link-primary ${selectedNavItem === item.id ? 'active' : ''}`}
                                 onClick={() => handleNavItemClick(item.id)}
                             >
                                 {item.label}
                             </span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <div className="col-md-12 p-4">
-                <div className="profile-content">
-                    {renderProfileContent()}
+                        ))}
+                </div>
+            </header>
+
+            <div className="container-fluid my-2 d-flex flex-wrap">
+                <div className="col-md-12 p-4">
+                    <div className="profile-content">
+                        {renderProfileContent()}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

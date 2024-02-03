@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+// import { useAuth } from './AuthContext';
 import AlertMessage from '../components/AlertMessage';
+import { useSelector } from 'react-redux';
+import AuthAPI from './AuthAPI';
 
 const Signup = () => {
     const [user, setUser] = useState({
@@ -12,8 +14,9 @@ const Signup = () => {
         first_name: '',
         last_name: '',
     });
+    // const { signup, isAuthenticated } = useAuth();
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-    const { signup, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const [alertMessage, setAlertMessage] = useState(null);
 
@@ -36,11 +39,11 @@ const Signup = () => {
 
         try {
             // Use the signup function from the authentication context
-            const response = await signup(user);
+            // const response = await signup(user);
+            const response = await AuthAPI.SignupUser(user);
             // If signup is successful, navigate to the login page
             console.log(response);
-            if(response.status !== 200)
-            {
+            if (response.status !== 200) {
                 setAlertMessage({ type: "danger", message: response.message });
             }
             navigate('/user/login');

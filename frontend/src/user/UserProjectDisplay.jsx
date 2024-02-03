@@ -63,7 +63,8 @@ const UserProjectDisplay = () => {
             {(selectedProject || isAddingNewProject) && (
                 <UserProjectForm initialFormData={selectedProject} onSubmit={fetchUseProjects} />
             )}
-            {!selectedProject && !isAddingNewProject && projects ? (
+
+            {(!selectedProject && !isAddingNewProject && projects) ? (
                 <div className="row">
                     {projects.map((project, index) => (
                         <div key={index} className="col-md-12 mb-4">
@@ -90,6 +91,10 @@ const UserProjectDisplay = () => {
                             </div>
                         </div>))}
                 </div>
+            ) : null}
+
+            {(!selectedProject && !isAddingNewProject && (!projects || projects.length === 0)) ? (
+                <h1 className='m-2'>No information found, Please add...</h1>
             ) : null}
 
             {/* Button to trigger adding a new Project */}

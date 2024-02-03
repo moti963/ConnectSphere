@@ -63,7 +63,7 @@ const UserEducationDisplay = () => {
 
       {(selectedEducation || isAddingNewEducation) && (<UserEduactionForm initialFormData={selectedEducation} onSubmit={fetchUserEducations} />)}
 
-      {!selectedEducation && !isAddingNewEducation && educations ? (
+      {(!selectedEducation && !isAddingNewEducation && educations) ? (
         <div className="row">
           {educations.map((education, index) => (
             <div key={index} className="col-md-6 mb-4">
@@ -90,9 +90,11 @@ const UserEducationDisplay = () => {
             </div>
           ))}
         </div>
-      ) : (
-        null
-      )}
+      ) : null}
+
+      {(!selectedEducation && !isAddingNewEducation && (!educations || educations.length === 0)) ? (
+        <h1 className='m-2'>No information found, Please add...</h1>
+      ) : null}
 
       {!isAddingNewEducation && (<button className='btn btn-sm btn-primary m-2' onClick={handleAddNewEducation}>Add new education</button>)}
       {(selectedEducation || isAddingNewEducation) && (<button className='btn btn-sm btn-secondary m-2' onClick={handleCancelClick}>Cancel</button>)}

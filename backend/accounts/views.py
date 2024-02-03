@@ -5,11 +5,12 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status, serializers
-from .serializers import SignupSerializer, ChangePasswordSerializer
+from .serializers import SignupSerializer, ChangePasswordSerializer, LoginSerializer, UserSerializer, UserProfileSerializer
 from datetime import timedelta
 from django.utils import timezone
 from django.contrib.auth import update_session_auth_hash
-
+from django.contrib.auth.models import User
+from users.models import UserProfile
 # Create your views here.
 
 
@@ -68,3 +69,56 @@ class UserChangePasswordView(APIView):
             return Response({'error': e.detail}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class UserLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            user_obj = User.objects.get(pk=user.id)
+            
+            try:
+                user_profile_obj = UserProfile.objects.get(user=user)
+                user_profile_serializer = UserProfileSerializer(user_profile_obj)
+            except UserProfile.DoesNotExist:
+                user_profile_serializer = None
+
+            user_serializer = UserSerializer(user_obj)
+            
+            # Generate refresh and access tokens
+            refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+
+            response_data = {
+                'user': user_serializer.data,
+                'profile': user_profile_serializer.data if user_profile_serializer else None,
+                'refresh_token': str(refresh),
+                'access_token': str(access_token),
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_serializer(self, *args, **kwargs):
+        return LoginSerializer(*args, **kwargs)
+    
+    # def post(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+
+    #     user = serializer.validated_data['user']
+    #     refresh, access = self.get_tokens_for_user(user)
+
+    #     tokens = {'access': str(access), 'refresh': str(refresh)}
+    #     return Response(tokens, status=status.HTTP_200_OK)
+
+    # def get_tokens_for_user(self, user):
+    #     refresh = RefreshToken.for_user(user)
+    #     access = refresh.access_token
+    #     return refresh, access
+
+    # def get_serializer(self, *args, **kwargs):
+    #     return LoginSerializer(*args, **kwargs)

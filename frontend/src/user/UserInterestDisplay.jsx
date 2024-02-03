@@ -68,34 +68,35 @@ const UserInterestDisplay = () => {
                 <UserInterestForm initialFormData={selectedInterest} onSubmit={fetchUserInterests} />
             )}
 
-            {!selectedInterest && !isAddingNewInterest && interests ?
-                (
-                    <div className="row">
-                        {interests.map((interest, index) => (
-                            <div key={index} className="col-md-4 mb-4">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <p className="card-text">Interest: {interest.interest_name}</p>
-                                        <button
-                                            className="btn btn-sm btn-primary m-2"
-                                            onClick={() => handleEditInterest(interest)}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="btn btn-sm btn-danger m-2"
-                                            onClick={() => handleDeleteInterest(interest)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
+            {(!selectedInterest && !isAddingNewInterest && interests) ? (
+                <div className="row">
+                    {interests.map((interest, index) => (
+                        <div key={index} className="col-md-4 mb-4">
+                            <div className="card">
+                                <div className="card-body">
+                                    <p className="card-text">Interest: {interest.interest_name}</p>
+                                    <button
+                                        className="btn btn-sm btn-primary m-2"
+                                        onClick={() => handleEditInterest(interest)}
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        className="btn btn-sm btn-danger m-2"
+                                        onClick={() => handleDeleteInterest(interest)}
+                                    >
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                ) : (
-                    null
-                )}
+                        </div>
+                    ))}
+                </div>
+            ) : null}
+
+            {(!selectedInterest && !isAddingNewInterest && (!interests || interests.length === 0)) ? (
+                <h1 className='m-2'>No information found, Please add...</h1>
+            ) : null}
 
             {/* Button to trigger adding a new Interest */}
             {!isAddingNewInterest && (

@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';  // Import the AuthContext
+// import { useAuth } from './AuthContext';  // Import the AuthContext
 // import img from '../static/images/logo512.png';
+import { login } from '../slices/authSlice';
+import { useSelector, useDispatch } from 'react-redux';
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const { login, isAuthenticated } = useAuth();  // Access isAuthenticated and login from AuthContext
     const [alertMessage, setAlertMessage] = useState(null);
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    // const { login, isAuthenticated } = useAuth();  // Access isAuthenticated and login from AuthContext
+    const dispatch = useDispatch();
 
-    const submit = async (e) => {
+
+    const submit = (e) => {
         e.preventDefault();
         const user = {
             username: username,
@@ -18,7 +23,7 @@ const Login = () => {
         };
 
         try {
-            await login(user);  // Use the login function from the context
+            dispatch(login(user));  // Use the login function from the context
             navigate("/");
         } catch (error) {
             console.error("Error in login: ", error.message);

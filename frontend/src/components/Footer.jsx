@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <footer className="bg-dark text-light py-2 shadow">
       <div className="mt-3 text-center">
-        <p>&copy; {currentYear} <strong> @BlogApp</strong> All rights reserved.</p>
+        <p>&copy; {currentYear} <strong> @ConnectSphere</strong> All rights reserved.</p>
       </div>
     </footer>
   );

@@ -1,0 +1,82 @@
+[
+    {
+        "id": 1,
+        "tag": "ML"
+    },
+    {
+        "id": 2,
+        "tag": "AI"
+    },
+    {
+        "id": 3,
+        "tag": "Web"
+    },
+    {
+        "id": 4,
+        "tag": "Back-end"
+    },
+    {
+        "id": 5,
+        "tag": "Technology"
+    },
+    {
+        "id": 6,
+        "tag": "Front-end"
+    },
+    {
+        "id": 7,
+        "tag": "Freelancing"
+    },
+    {
+        "id": 8,
+        "tag": "General"
+    },
+    {
+        "id": 9,
+        "tag": "Lifestyle"
+    },
+    {
+        "id": 10,
+        "tag": "World"
+    },
+    {
+        "id": 11,
+        "tag": "India"
+    },
+    {
+        "id": 12,
+        "tag": "Design"
+    },
+    {
+        "id": 13,
+        "tag": "Culture"
+    },
+    {
+        "id": 14,
+        "tag": "Business"
+    },
+    {
+        "id": 15,
+        "tag": "Science"
+    },
+    {
+        "id": 16,
+        "tag": "Politics"
+    },
+    {
+        "id": 17,
+        "tag": "ForKids"
+    },
+    {
+        "id": 18,
+        "tag": "Health"
+    },
+    {
+        "id": 19,
+        "tag": "Travel"
+    },
+    {
+        "id": 20,
+        "tag": "Opinion"
+    }
+]

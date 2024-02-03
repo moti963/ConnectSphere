@@ -23,6 +23,17 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
+    
+# I'll seperate this lator
+
+# class UserProfileImage(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+#     image = models.ImageField(upload_to="profile/", null=True, blank=True, default=None)
+
+#     def __str__(self):
+#         return f"{self.user.username}-{self.image:50}"
+    
+
 
 
 class UserContact(models.Model):

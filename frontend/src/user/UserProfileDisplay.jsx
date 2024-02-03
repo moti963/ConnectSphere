@@ -42,7 +42,7 @@ const UserProfileDisplay = () => {
 
       {editMode && (<UserProfileForm initialFormData={profile} onSubmit={fetchProfile} />)}
 
-      {!editMode && profile && (
+      {(!editMode && profile) ? (
         <div className="card shadow">
           <div className="card-header bg-primary text-white">
             <h2>{editMode ? 'Edit Profile' : 'Profile Information'}</h2>
@@ -76,7 +76,11 @@ const UserProfileDisplay = () => {
             )}
           </div>
         </div>
-      )}
+      ) : null}
+
+      {(!editMode && (!profile || profile.length === 0)) ? (
+        <h1 className='m-2'>No information found, Please add...</h1>
+      ) : null}
 
       {!profile && (<button
         className="btn btn-sm btn-primary"
@@ -84,7 +88,7 @@ const UserProfileDisplay = () => {
       >
         Edit Profile
       </button>)}
-      
+
       {(editMode || !profile) && (
         <button
           className="btn btn-sm btn-secondary m-2"
@@ -93,8 +97,6 @@ const UserProfileDisplay = () => {
           Cancel
         </button>
       )}
-
-      {!profile && !alertMessage && <p className="text-center">No profile found.</p>}
     </div>
   );
 };

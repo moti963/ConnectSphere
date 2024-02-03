@@ -65,7 +65,7 @@ const UserSocialMediaDisplay = () => {
                 <UserSocialMediaForm initialFormData={selectedMedia} onSubmit={fetchUserSocialMedia} />
             )}
 
-            {!selectedMedia && !isAddingNewMedia && socialMedia ? (
+            {(!selectedMedia && !isAddingNewMedia && socialMedia) ? (
                 <div className="row row-cols-1 row-cols-md-3 g-4">
                     {socialMedia.map((media, index) => (
                         <div key={index} className="col-md-4 mb-4 col">
@@ -91,8 +91,11 @@ const UserSocialMediaDisplay = () => {
 
                     ))}
                 </div>
-            ) : null
-            }
+            ) : null}
+
+            {(!selectedMedia && !isAddingNewMedia && (!socialMedia || socialMedia.length === 0)) ? (
+                <h1 className='m-2'>No information found, Please add...</h1>
+            ) : null}
 
             {/* Button to trigger adding a new Media */}
             {!isAddingNewMedia && (

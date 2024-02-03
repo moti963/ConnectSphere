@@ -1,19 +1,28 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
-import logo from '../static/images/logo2.png';
+// import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+// import { useAuth } from "../auth/AuthContext";
+// import logo from '../static/images/logo2.png';
 import '../static/css/Navbar.css';
 import profile from '../static/images/logo192.png';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from "../slices/authSlice";
 
 const Navbar = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const authUser = useSelector((state) => state.auth.user);
+  // const { isAuthenticated, logout } = useAuth();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user_image = useSelector((state) => state.auth.user.image);
+  // const navigate = useNavigate();
 
-  const handleLogout = async () => {
+  console.log(authUser);
+
+  const handleLogout = () => {
     try {
-      await logout();
-      navigate("/");
+      // await logout();
+      dispatch(logout());
+      // navigate("/");
     } catch (error) {
       console.error('Logout error:', error.message);
     }
@@ -30,7 +39,8 @@ const Navbar = () => {
       >
         <div className="container-fluid">
           <NavLink className="navbar-brand" to="/">
-            <img src={logo} style={{ height: '36px' }} alt="BlogApp" />
+            {/* <img src={logo} style={{ height: '36px' }} alt="BlogApp" /> */}
+            ConnectSphere
           </NavLink>
           <button
             className="navbar-toggler"
@@ -61,7 +71,7 @@ const Navbar = () => {
                 <li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div className="profile-pic">
-                      <img src={profile} alt="User" />
+                      <img src={(user_image) ? "http://127.0.0.1:8000" + user_image : profile} alt="User" />
                     </div>
                   </a>
                   <ul

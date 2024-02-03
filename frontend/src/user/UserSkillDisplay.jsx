@@ -64,7 +64,7 @@ const UserSkillDisplay = () => {
         <UserSkillForm initialFormData={selectedSkill} onSubmit={fetchUserSkills} />
       )}
 
-      {!isAddingNewSkill && !selectedSkill && skills ? (
+      {(!isAddingNewSkill && !selectedSkill && skills) ? (
         <div className="row">
           {skills.map((skill, index) => (
             <div key={index} className="col-md-4 mb-4">
@@ -89,6 +89,10 @@ const UserSkillDisplay = () => {
             </div>
           ))}
         </div>
+      ) : null}
+
+      {(!isAddingNewSkill && !selectedSkill && (!skills || skills.length === 0)) ? (
+        <h1 className='m-2'>No information found, Please add...</h1>
       ) : null}
 
       {!isAddingNewSkill && (

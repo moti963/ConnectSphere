@@ -65,8 +65,7 @@ const UserLanguageDisplay = () => {
                 <UserLanguageForm initialFormData={selectedLanguage} onSubmit={fetchUserLanguages} />
             )}
 
-            {!selectedLanguage && !isAddingNewLanguage &&
-                languages ? (
+            {(!selectedLanguage && !isAddingNewLanguage && languages) ? (
                 <div className="row">
                     {languages.map((language, index) => (
                         <div key={index} className="col-md-4 mb-4">
@@ -91,6 +90,10 @@ const UserLanguageDisplay = () => {
                         </div>
                     ))}
                 </div>
+            ) : null}
+
+            {(!selectedLanguage && !isAddingNewLanguage && (!languages || languages.length === 0)) ? (
+                <h1 className='m-2'>No information found, Please add...</h1>
             ) : null}
 
 

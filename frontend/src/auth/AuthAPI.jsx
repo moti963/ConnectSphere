@@ -18,14 +18,14 @@ class AuthAPI {
             if (error.response) {
                 return error.response;
             }
-            console.log(error);
-            // throw error;
+            // console.log(error);
+            throw error;
         }
     }
 
     static async LoginUser(body) {
         try {
-            const response = await axios.post(`${this.baseUrl}/token/`, body, {
+            const response = await axios.post(`${this.baseUrl}/login/`, body, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -81,7 +81,6 @@ class AuthAPI {
                     "Content-Type": "application/json",
                 },
             });
-            cookie.set('access_token', response.data.access);
             return response;
         } catch (error) {
             if (error.response) {

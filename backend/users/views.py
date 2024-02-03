@@ -41,36 +41,44 @@ class UserView(APIView):
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    parser_classes = [MultiPartParser]
+    # parser_classes = [MultiPartParser]
 
-    def get_serializer(self, *args, **kwargs):
-        kwargs['context'] = {'request': self.request}
-        return UserProfileSerializer(*args, **kwargs)
+    # def get_serializer(self, *args, **kwargs):
+    #     kwargs['context'] = {'request': self.request}
+    #     return UserProfileSerializer(*args, **kwargs)
 
     def get(self, request):
-        user_profile = get_object_or_404(UserProfile, user=request.user)
-        serializer = UserProfileSerializer(user_profile)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            user_profile = get_object_or_404(UserProfile, user=request.user)
+            serializer = UserProfileSerializer(user_profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "No profile found"}, status=status.HTTP_404_NOT_FOUND)
+
 
     def put(self, request):
-        # print(request.data)
-        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-        serializer = UserProfileSerializer(user_profile, data=request.data)
-        # print(serializer)
-        # print(request.data)
-        if serializer.is_valid():
-            # print(request.data['profile_img'])
-            if not request.data.get('profile_img'):
-                serializer.validated_data.pop('profile_img', None)
+        try:
+            # print(request.data)
+            user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+            serializer = UserProfileSerializer(user_profile, data=request.data)
+            # print(serializer)
+            # print(request.data)
+            if serializer.is_valid():
+                # print(request.data['profile_img'])
+                if not request.data.get('profile_img'):
+                    serializer.validated_data.pop('profile_img', None)
+                else:
+                    img_data = request.data['profile_img'].read()
+                    user_profile.profile_img.save(request.data['profile_img'].name, ContentFile(img_data))
+                serializer.save()
+                message = "Profile created successfully" if created else "Profile updated successfully"
+                return Response({'message': message}, status=status.HTTP_202_ACCEPTED)
             else:
-                img_data = request.data['profile_img'].read()
-                user_profile.profile_img.save(request.data['profile_img'].name, ContentFile(img_data))
-            serializer.save()
-            message = "Profile created successfully" if created else "Profile updated successfully"
-            return Response({'message': message}, status=status.HTTP_202_ACCEPTED)
-        else:
-            # print(serializer.errors)
-            return Response({"error": str(serializer.error_messages)}, status=status.HTTP_400_BAD_REQUEST)
+                # print(serializer.errors)
+                return Response({"error": str(serializer.error_messages)}, status=status.HTTP_400_BAD_REQUEST)
+        except:
+                return Response({"error": "No profile updated."}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class UserContactView(APIView):

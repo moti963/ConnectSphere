@@ -66,7 +66,7 @@ const UserCertificationDisplay = () => {
             )}
 
             {/* Display existing certifications */}
-            {!selectedCertification && !isAddingNewCertification && certifications ? (
+            {(!selectedCertification && !isAddingNewCertification && certifications && certifications.length > 0) ? (
                 <div className="row">
                     {certifications.map((certification, index) => (
                         <div key={index} className="col-md-6 mb-4">
@@ -93,6 +93,10 @@ const UserCertificationDisplay = () => {
                         </div>
                     ))}
                 </div>
+            ) : null}
+
+            {(!selectedCertification && !isAddingNewCertification && (!certifications || certifications.length === 0)) ? (
+                <h1 className='m-2'>No information found, Please add...</h1>
             ) : null}
 
             {/* Button to trigger adding a new Certification */}

@@ -4,8 +4,10 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import AlertMessage from '../components/AlertMessage';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+// import { useAuth } from '../auth/AuthContext';
 import BlogAPI from './BlogAPI';
+import { useSelector } from 'react-redux';
+import allTagsData from '../dataset/tags.json';
 
 const WriteBlog = () => {
 
@@ -19,30 +21,29 @@ const WriteBlog = () => {
     const [allTags, setAllTags] = useState([]);
     const [alertMessage, setAlertMessage] = useState(null);
 
-
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     useEffect(() => {
         const fetchData = async () => {
             // if (isAuthenticated) {
-            try {
-                const response = await BlogAPI.getAllTags();
-                // console.log(response.data);
-                // console.log(response);
-                setAllTags(response.data);
-            } catch (error) {
-                console.error('Error fetching tags:', error.message);
-            }
+            // try {
+            //     const response = await BlogAPI.getAllTags();
+            //     // console.log(response.data);
+            //     // console.log(response);
+            //     setAllTags(response.data);
+            // } catch (error) {
+            //     console.error('Error fetching tags:', error.message);
             // }
+            // }
+            setAllTags(allTagsData);
         };
 
         fetchData();
-
         if (!isAuthenticated) {
             setAlertMessage({ type: "warning", message: "Please login to post your blogs" });
         }
-    }, [navigate, isAuthenticated, alertMessage]);
+    }, [isAuthenticated]);
 
     const handleContentChange = (value) => {
         setBlogContent((prev) => ({
@@ -79,25 +80,26 @@ const WriteBlog = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log(blogContent);
+        return;
 
-        if (blogContent.tags.length < 1) {
-            setAlertMessage({ type: "warning", message: "Please select tags." });
-            // console.log("Hello");
-            return;
-        }
+        // if (blogContent.tags.length < 1) {
+        //     setAlertMessage({ type: "warning", message: "Please select tags." });
+        //     // console.log("Hello");
+        //     return;
+        // }
 
-        try {
-            // console.log(blogContent);
-            const response = await BlogAPI.postBlog(blogContent);
-            // console.log(response);
-            // // Optionally, you can redirect the user to the newly created blog page
-            if(response.data.status === 201)
-            {
-                navigate(`/blog/post/${response.data.id}`);
-            }
-        } catch (error) {
-            console.error('Error posting blog:', error.message);
-        }
+        // try {
+        //     // console.log(blogContent);
+        //     const response = await BlogAPI.postBlog(blogContent);
+        //     // console.log(response);
+        //     // // Optionally, you can redirect the user to the newly created blog page
+        //     if (response.data.status === 201) {
+        //         navigate(`/blog/post/${response.data.id}`);
+        //     }
+        // } catch (error) {
+        //     console.error('Error posting blog:', error.message);
+        // }
     };
 
     return (

@@ -19,7 +19,7 @@ const BlogList = ({ blogs }) => {
                             <div className="card-footer d-flex justify-content-between align-items-center">
                                 <div className="author">
                                     <Link to={`/profile/${blog.username}`}>
-                                        <img src={("http://127.0.0.1:8000/" + blog.profile_img) || logo} alt={blog.user} className="rounded-circle img-thumbnail mb-3"
+                                        <img src={blog.profile_img ? ("http://127.0.0.1:8000/" + blog.profile_img) : logo} alt={blog.user} className="rounded-circle img-thumbnail mb-3"
                                             style={{ maxWidth: '42px', height: 'auto' }} />
                                         <span className="ml-2">{blog.username}</span>
                                     </Link>

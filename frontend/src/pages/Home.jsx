@@ -59,34 +59,42 @@ const Home = () => {
 
   return (
     <>
-      <div className="container-fluid">
-        <header className="navbar navbar-expand-lg bg-dark px-5" data-bs-theme="dark">
-          <form className="form-inline d-flex">
-            <input className="form-control" type="search" placeholder="Search" aria-label="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-            <button className="btn btn-sm btn-outline-success" type="button" onClick={handleSearch}>Search</button>
-          </form>
-          <div className="nav-underline d-flex scrollmenu">
-            <span
-              className={`mx-2 btn nav-item nav-link link-primary ${selectedTag === null ? 'active' : ''}`}
-              onClick={() => handleTagClick({ tag: null })}
-            >
-              Blogs
-            </span>
-            {allTags &&
-              allTags.map((tag, index) => (
-                <span
-                  key={index}
-                  className={`mx-2 btn nav-item nav-link link-primary ${selectedTag === tag.tag ? 'active' : ''}`}
-                  onClick={() => handleTagClick(tag)}
-                >
-                  {tag.tag}
-                </span>
-              ))}
-          </div>
-        </header>
-      </div>
+
+      <header className="navbar navbar-expand-lg bg-body-tertiary bg-dark p-2 d-flex" data-bs-theme="dark">
+        <form className="d-flex align-items-center">
+          <input
+            className="form-control"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button className="btn btn-outline-success" type="button" onClick={handleSearch}>
+            Search
+          </button>
+        </form>
+        <div className="nav-underline d-flex scrollmenu">
+          <span
+            className={`mx-2 btn nav-item nav-link link-primary ${selectedTag === null ? 'active' : ''}`}
+            onClick={() => handleTagClick({ tag: null })}
+          >
+            Blogs
+          </span>
+          {allTags &&
+            allTags.map((tag, index) => (
+              <span
+                key={index}
+                className={`mx-2 btn nav-item nav-link link-primary ${selectedTag === tag.tag ? 'active' : ''}`}
+                onClick={() => handleTagClick(tag)}
+              >
+                {tag.tag}
+              </span>
+            ))}
+        </div>
+      </header>
+
       <main className="container">
-        <h1>Here we'll render blogs/posts for {selectedTag}</h1>
         {/* Render your blog posts based on the selected tag */}
         {blogPosts ? (<BlogList blogs={blogPosts} />) : (<NotFound />)}
       </main>

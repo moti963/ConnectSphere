@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-
+from django.contrib.auth import authenticate
+from users.models import UserProfile
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -37,10 +38,43 @@ class ChangePasswordSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'first_name', 'last_name']
         extra_kwargs = {
             'password': {
                 'write_only': True,
             },
         }
 
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150, required=True)
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user and user.is_active:
+            data['user'] = user
+        else:
+            raise serializers.ValidationError('Unable to log in with provided credentials')
+
+        return data
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['profile_img']
+
+# class UserLoginProfileSerializer(serializers.Serializer):
+#     username = serializers.CharField(source="user.username", read_only=True)
+#     first_name = serializers.CharField(source="user.first_name", read_only=True)
+#     last_name = serializers.CharField(source="user.last_name", read_only=True)
+    
+    # Include the UserProfileSerializer as a field
+    # profile = UserProfileSerializer(source="user.userprofile", read_only=True)
+
+    

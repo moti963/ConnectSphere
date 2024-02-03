@@ -69,7 +69,7 @@ const UserContactDisplay = () => {
       )}
 
       {/* Display the contacts only if neither editing nor adding new contact is in progress */}
-      {!selectedContact && !isAddingNewContact && contacts ? (
+      {(!selectedContact && !isAddingNewContact && contacts) ? (
         <div className="row">
           {contacts.map((contact, index) => (
             <div key={index} className="col-md-4 mb-4">
@@ -94,9 +94,11 @@ const UserContactDisplay = () => {
             </div>
           ))}
         </div>
-      ) : (
-        null
-      )}
+      ) : null}
+
+      {(!selectedContact && !isAddingNewContact && (!contacts || contacts.length === 0)) ? (
+        <h1 className='m-2'>No information found, Please add...</h1>
+      ) : null}
 
       {/* Button to trigger adding a new contact */}
       {!isAddingNewContact && (
