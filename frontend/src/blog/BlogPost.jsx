@@ -13,8 +13,8 @@ const BlogPost = () => {
     useEffect(() => {
         const fetchBlog = async () => {
             try {
-                const response = await BlogAPI.getBlog(id);
-                // console.log(response.data);
+                const response = await BlogAPI.getBlogDetails(id);
+                console.log(response.data);
                 setBlog(response.data);
             } catch (error) {
                 // Handle error (e.g., redirect to a 404 page)

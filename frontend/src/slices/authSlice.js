@@ -5,7 +5,7 @@ import { Cookies } from "react-cookie";
 const cookie = new Cookies();
 
 // Retrieve initial state from local storage if available
-const storedData = JSON.parse(localStorage.getItem('reduxState')) || {
+const storedData = JSON.parse(localStorage.getItem('authState')) || {
   user: {
     id: null,
     username: null,
@@ -38,7 +38,7 @@ export const authSlice = createSlice({
       cookie.set('refresh_token', action.payload.refresh_token);
       cookie.set('access_token', action.payload.access_token);
       // Save state to local storage
-      localStorage.setItem('reduxState', JSON.stringify(state));
+      localStorage.setItem('authState', JSON.stringify(state));
     },
     loginFailure: (state, action) => {
       state.user.id = null;
@@ -52,7 +52,7 @@ export const authSlice = createSlice({
       cookie.remove('refresh_token');
       cookie.remove('access_token');
       // Clear state from local storage
-      localStorage.removeItem('reduxState');
+      localStorage.removeItem('authState');
     },
     logout: (state) => {
       state.user.id = null;
@@ -66,14 +66,14 @@ export const authSlice = createSlice({
       cookie.remove('refresh_token');
       cookie.remove('access_token');
       // Clear state from local storage
-      localStorage.removeItem('reduxState');
+      localStorage.removeItem('authState');
     },
     refreshAccessTokenSuccess: (state, action) => {
       state.error = null;
       // Update tokens in cookies
       cookie.set('access_token', action.payload.access);
       // Save state to local storage
-      localStorage.setItem('reduxState', JSON.stringify(state));
+      localStorage.setItem('authState', JSON.stringify(state));
     },
     refreshAccessTokenFailure: (state, action) => {
       state.user.id = null;
@@ -87,7 +87,7 @@ export const authSlice = createSlice({
       cookie.remove('refresh_token');
       cookie.remove('access_token');
       // Clear state from local storage
-      localStorage.removeItem('reduxState');
+      localStorage.removeItem('authState');
     },
   },
 });

@@ -20,7 +20,7 @@ class BlogAPI {
         }
     }
 
-    static async getBlog(id) {
+    static async getBlogDetails(id) {
         try {
             const response = await axios.get(`${this.baseUrl}/blogs/${id}`, {
                 headers: {
@@ -54,7 +54,7 @@ class BlogAPI {
         try {
             const response = await axios.post(`${this.baseUrl}/newblog/`, body, {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     'Authorization': `JWT ${access_token}`,
                 },
             });
@@ -65,10 +65,26 @@ class BlogAPI {
         }
     }
 
-    static async updateBlog(id, body) {
+    static async updateMyBlogPost(id, body) {
         const access_token = cookie.get("access_token");
         try {
-            const response = await axios.put(`${this.baseUrl}/update/${id}`, body, {
+            const response = await axios.put(`${this.baseUrl}/update/${id}/`, body, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    'Authorization': `JWT ${access_token}`,
+                },
+            });
+            return response;
+        } catch (error) {
+            console.log("Error in updating blog", error.message);
+            throw error;
+        }
+    }
+
+    static async deleteMyBlogPost(id) {
+        const access_token = cookie.get("access_token");
+        try {
+            const response = await axios.delete(`${this.baseUrl}/update/${id}/`, {
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': `JWT ${access_token}`,
@@ -76,7 +92,7 @@ class BlogAPI {
             });
             return response;
         } catch (error) {
-            console.log("Error in updating blog", error.message);
+            console.log("Error in deleting blog", error.message);
             throw error;
         }
     }
@@ -91,7 +107,7 @@ class BlogAPI {
             return response;
         } catch (error) {
             console.log("Error in fetching blogs", error.message);
-            // throw error;
+            throw error;
         }
     }
 
@@ -105,10 +121,11 @@ class BlogAPI {
             return response;
         } catch (error) {
             console.log("error in searching blogs");
+            throw error;
         }
     }
 
-    static async getMyBlogs() {
+    static async getMyPublishedBlogs() {
         const access_token = cookie.get("access_token");
         try {
             const response = await axios.get(`${this.baseUrl}/myblogs`, {

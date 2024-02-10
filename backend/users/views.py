@@ -10,8 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework.parsers import MultiPartParser
-from django.core.files.base import ContentFile
+# from rest_framework.parsers import MultiPartParser
+# from django.core.files.base import ContentFile
 # Create your views here.
 
 class UserView(APIView):
@@ -55,31 +55,20 @@ class UserProfileView(APIView):
         except:
             return Response({"message": "No profile found"}, status=status.HTTP_404_NOT_FOUND)
 
-
     def put(self, request):
         try:
-            # print(request.data)
-            user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+            user_profile = UserProfile.objects.get(user=request.user)
             serializer = UserProfileSerializer(user_profile, data=request.data)
-            # print(serializer)
-            # print(request.data)
-            if serializer.is_valid():
-                # print(request.data['profile_img'])
-                if not request.data.get('profile_img'):
-                    serializer.validated_data.pop('profile_img', None)
-                else:
-                    img_data = request.data['profile_img'].read()
-                    user_profile.profile_img.save(request.data['profile_img'].name, ContentFile(img_data))
-                serializer.save()
-                message = "Profile created successfully" if created else "Profile updated successfully"
-                return Response({'message': message}, status=status.HTTP_202_ACCEPTED)
-            else:
-                # print(serializer.errors)
-                return Response({"error": str(serializer.error_messages)}, status=status.HTTP_400_BAD_REQUEST)
-        except:
-                return Response({"error": "No profile updated."}, status=status.HTTP_404_NOT_FOUND)
-
-
+        except UserProfile.DoesNotExist:
+            # If the profile doesn't exist, create a new one
+            serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data)
+        # print(serializer.error_messages)
+        # print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 class UserContactView(APIView):
     permission_classes = [IsAuthenticated]

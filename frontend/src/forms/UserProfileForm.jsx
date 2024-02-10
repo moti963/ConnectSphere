@@ -5,9 +5,10 @@ import UserAPI from '../user/UserAPI';
 const UserProfileForm = ({ initialFormData, onSubmit }) => {
     const [formData, setFormData] = useState(initialFormData || {
         bio: '',
+        profile_img: null,
         location: '',
         birth_date: '',
-        gender: '',
+        gender: 'male',
         website: ''
     });
     const [fileInput, setFileInput] = useState(null);
@@ -30,7 +31,7 @@ const UserProfileForm = ({ initialFormData, onSubmit }) => {
             if (fileInput) {
                 formData.profile_img = fileInput;
             }
-            // console.log(formData);
+            console.log(formData);
             const response = await UserAPI.updateUserProfile(formData);
             // console.log(response);
             setAlertMessage({ type: "success", message: response.message });

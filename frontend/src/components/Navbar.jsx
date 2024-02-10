@@ -1,28 +1,24 @@
 import React from "react";
 // import { NavLink, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-// import { useAuth } from "../auth/AuthContext";
 // import logo from '../static/images/logo2.png';
 import '../static/css/Navbar.css';
 import profile from '../static/images/logo192.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from "../slices/authSlice";
+import { logoutUser } from "../slices/authSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const authUser = useSelector((state) => state.auth.user);
-  // const { isAuthenticated, logout } = useAuth();
+  // const authUser = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user_image = useSelector((state) => state.auth.user.image);
   // const navigate = useNavigate();
 
-  console.log(authUser);
+  // console.log(authUser);
 
   const handleLogout = () => {
     try {
-      // await logout();
-      dispatch(logout());
-      // navigate("/");
+      dispatch(logoutUser());
     } catch (error) {
       console.error('Logout error:', error.message);
     }
@@ -39,7 +35,6 @@ const Navbar = () => {
       >
         <div className="container-fluid">
           <NavLink className="navbar-brand" to="/">
-            {/* <img src={logo} style={{ height: '36px' }} alt="BlogApp" /> */}
             ConnectSphere
           </NavLink>
           <button

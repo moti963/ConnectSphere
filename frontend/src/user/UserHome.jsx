@@ -13,9 +13,9 @@ import UserChangePassword from '../forms/UserChangePassword';
 import UserSocialMediaDisplay from './UserSocialMediaDisplay';
 import UserPostBlog from './UserPostBlog';
 import UserAccount from './UserAccount';
-import { useAuth } from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import '../static/css/UserHome.css';
+import { useSelector } from 'react-redux';
 
 const navItems = [
     { id: 'account', label: 'Account', logo: logo },
@@ -37,7 +37,7 @@ const navItems = [
 
 const UserHome = () => {
     const [selectedNavItem, setSelectedNavItem] = useState(navItems[0].id);
-    const { isAuthenticated } = useAuth();
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -56,8 +56,8 @@ const UserHome = () => {
     const renderProfileContent = () => {
         switch (selectedNavItem) {
             case 'account': return <UserAccount />;
-            case 'myblog': return <UserPostBlog />;
-            case 'draft': return <UserPostBlog />;
+            case 'myblog': return <UserPostBlog blogType={"published"} />;
+            case 'draft': return <UserPostBlog blogType={"draft"} />;
             case 'profile': return <UserProfileDisplay />;
             case 'contact': return <UserContactDisplay />;
             case 'education': return <UserEducationDisplay />;

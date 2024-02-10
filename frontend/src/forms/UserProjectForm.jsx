@@ -40,11 +40,11 @@ const UserProjectForm = ({ initialFormData, onSubmit }) => {
 
         try {
             if (initialFormData && initialFormData.id) {
-                await UserAPI.updateUserCertification(initialFormData.id, formData);
+                await UserAPI.updateUserProject(initialFormData.id, formData);
                 setAlertMessage({ type: "success", message: "Updated successfully" })
             }
             else {
-                await UserAPI.addUserCertification(formData);
+                await UserAPI.addUserProject(formData);
                 setAlertMessage({ type: "success", message: "Added successfully" })
             }
             onSubmit();

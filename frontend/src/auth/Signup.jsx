@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { useAuth } from './AuthContext';
 import AlertMessage from '../components/AlertMessage';
 import { useSelector } from 'react-redux';
 import AuthAPI from './AuthAPI';
@@ -14,7 +13,6 @@ const Signup = () => {
         first_name: '',
         last_name: '',
     });
-    // const { signup, isAuthenticated } = useAuth();
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     const navigate = useNavigate();

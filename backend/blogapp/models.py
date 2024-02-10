@@ -26,21 +26,18 @@ class Blog(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'draft', 'Draft'
         PUBLISHED = 'published', 'Published'
+        DELETED = 'deleted', 'Deleted'
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    thumbnail = models.ImageField(upload_to="thumbnail/", null=True, blank=True, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     title = models.CharField(max_length=255, blank=False, null=False, default="")
+    thumbnail = models.ImageField(upload_to="thumbnail/", null=True, blank=True, default=None)
     description = models.TextField(max_length=500, blank=False, null=False, default="")
     content = models.ForeignKey(BlogContent, related_name="blogs", on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PUBLISHED)
     tags = models.ManyToManyField(Tag, related_name='blogs', blank=True)
     views = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-
-    def save(self, *args, **kwargs):
-        self.user = self.user.username
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} by {self.user.username} ({self.created_at})"

@@ -3,30 +3,32 @@ import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import AlertMessage from '../components/AlertMessage';
-import { useNavigate, useParams } from 'react-router-dom';
-// import { useAuth } from '../auth/AuthContext';
-import BlogAPI from './BlogAPI';
+import { useNavigate } from 'react-router-dom';
+import BlogAPI from '../blog/BlogAPI';
 import { useSelector } from 'react-redux';
+import allTagsData from '../dataset/tags.json';
 
-const BlogEdit = () => {
+
+const UserPostEdit = ({ id }) => {
     const [blogContent, setBlogContent] = useState({
-        content: '',
         title: '',
+        thumbnail: null,
         description: '',
+        content: '',
         status: 'published',
         tags: [],
     });
     const [allTags, setAllTags] = useState([]);
     const [alertMessage, setAlertMessage] = useState(null);
+    const [thumbnail, setThumbnail] = useState(null);
 
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
     const navigate = useNavigate();
-    const { id } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await BlogAPI.getBlog(id);
+                const response = await BlogAPI.getBlogDetails(id);
                 const blogData = response.data;
 
                 setBlogContent({
@@ -42,12 +44,13 @@ const BlogEdit = () => {
         };
 
         const fetchTags = async () => {
-            try {
-                const response = await BlogAPI.getAllTags();
-                setAllTags(response.data);
-            } catch (error) {
-                console.error('Error fetching tags:', error.message);
-            }
+            // try {
+            //     const response = await BlogAPI.getAllTags();
+            //     setAllTags(response.data);
+            // } catch (error) {
+            //     console.error('Error fetching tags:', error.message);
+            // }
+            setAllTags(allTagsData);
         };
 
         fetchData();
@@ -64,20 +67,31 @@ const BlogEdit = () => {
         }));
     };
 
-    const handleTagsChange = (event) => {
-        const { name, value, checked } = event.target;
+    const handleThumbnailChange = (event) => {
+        const thumbnail = event.target.files[0];
+        setThumbnail(thumbnail);
+    };
 
-        const updatedTags = new Set(blogContent.tags);
+    const handleTagsChange = (event) => {
+        const { value, checked } = event.target;
 
         if (checked) {
-            updatedTags.add(value);
+            // Add the tag to blogContent.tags if it doesn't already exist
+            if (!blogContent.tags.includes(value)) {
+                blogContent.tags.push(value);
+            }
         } else {
-            updatedTags.delete(value);
+            // Remove the tag from blogContent.tags
+            const index = blogContent.tags.indexOf(value);
+            if (index !== -1) {
+                blogContent.tags.splice(index, 1);
+            }
         }
 
-        setBlogContent((prev) => ({
+        // Ensure immutability by creating a new array for blogContent.tags
+        setBlogContent(prev => ({
             ...prev,
-            [name]: Array.from(updatedTags),
+            tags: [...blogContent.tags]
         }));
     };
 
@@ -92,16 +106,18 @@ const BlogEdit = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        blogContent.thumbnail = thumbnail;
+
         if (blogContent.tags.length < 1) {
             setAlertMessage({ type: "warning", message: "Please select tags." });
             return;
         }
 
         try {
-            const response = await BlogAPI.updateBlog(id, blogContent);
-            if (response.data.status === 200) {
-                navigate(`/blog/post/${id}`);
-            }
+            const response = await BlogAPI.updateMyBlogPost(id, blogContent);
+            console.log(response);
+            navigate(`/post/${id}`);
+            console.log(blogContent);
         } catch (error) {
             console.error('Error updating blog:', error.message);
         }
@@ -113,9 +129,9 @@ const BlogEdit = () => {
                 <AlertMessage message={alertMessage.message} />
             ) : null}
 
-            <h3 className='text-bg-secondary rounded p-2'>Edit Blog</h3>
+            <h3 className='text-center rounded p-2'>Edit Blog</h3>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className='mb-3'>
                 <button className='btn btn-success my-3 me-auto' type="submit">
                     Update
                 </button>
@@ -136,6 +152,18 @@ const BlogEdit = () => {
                         </div>
 
                         <div className="mb-2">
+                            <label htmlFor="thumbnail" className="form-label">Thumbnail</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                id="thumbnail"
+                                name="thumbnail"
+                                onChange={handleThumbnailChange}
+                                accept='image/*'
+                            />
+                        </div>
+
+                        <div className="mb-2">
                             <label htmlFor="description" className="form-label">Description</label>
                             <textarea
                                 type="text"
@@ -145,7 +173,7 @@ const BlogEdit = () => {
                                 value={blogContent.description}
                                 onChange={handleChange}
                                 required
-                                rows={4}
+                                rows={2}
                                 maxLength={500}
                             />
                         </div>
@@ -153,7 +181,7 @@ const BlogEdit = () => {
 
                     <div className="mb-3 col-md-6 p-3">
                         <label className="form-label">Select tags</label>
-                        <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             {allTags &&
                                 allTags.map((tag) => (
                                     <div className="form-check" key={tag.id}>
@@ -209,9 +237,12 @@ const BlogEdit = () => {
                         ],
                     }}
                 />
+
+
             </form>
+            <p className='text-bg-warning rounded p-2 m-2'><i>Note: </i>After editing the post, your post's views will be reseted</p>
         </div>
     );
 };
 
-export default BlogEdit;
+export default UserPostEdit;

@@ -1,49 +1,39 @@
-// MarkdownEditor.js
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import AlertMessage from '../components/AlertMessage';
 import { useNavigate } from 'react-router-dom';
-// import { useAuth } from '../auth/AuthContext';
 import BlogAPI from './BlogAPI';
 import { useSelector } from 'react-redux';
 import allTagsData from '../dataset/tags.json';
 
 const WriteBlog = () => {
-
     const [blogContent, setBlogContent] = useState({
         content: '',
         title: '',
-        description: '',
+        thumbnail: null,
+        description: '', // Corrected typo from "discription" to "description"
         status: 'published',
-        tags: [],  // assuming tags is an array of tag names
+        tags: []
     });
     const [allTags, setAllTags] = useState([]);
     const [alertMessage, setAlertMessage] = useState(null);
+    const [thumbnail, setThumbnail] = useState(null);
 
     const navigate = useNavigate();
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     useEffect(() => {
         const fetchData = async () => {
-            // if (isAuthenticated) {
-            // try {
-            //     const response = await BlogAPI.getAllTags();
-            //     // console.log(response.data);
-            //     // console.log(response);
-            //     setAllTags(response.data);
-            // } catch (error) {
-            //     console.error('Error fetching tags:', error.message);
-            // }
-            // }
             setAllTags(allTagsData);
         };
 
         fetchData();
         if (!isAuthenticated) {
             setAlertMessage({ type: "warning", message: "Please login to post your blogs" });
+            navigate("/user/login");
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, navigate]);
 
     const handleContentChange = (value) => {
         setBlogContent((prev) => ({
@@ -55,18 +45,14 @@ const WriteBlog = () => {
     const handleTagsChange = (event) => {
         const { name, value, checked } = event.target;
 
-        // Use a Set to handle unique tags efficiently
-        const updatedTags = new Set(blogContent.tags);
-
-        if (checked) {
-            updatedTags.add(value);
-        } else {
-            updatedTags.delete(value);
-        }
+        // If checked, add the tag to the list, otherwise remove it
+        const updatedTags = checked
+            ? [...blogContent.tags, value]
+            : blogContent.tags.filter(tag => tag !== value);
 
         setBlogContent((prev) => ({
             ...prev,
-            [name]: Array.from(updatedTags),
+            [name]: updatedTags,
         }));
     };
 
@@ -78,28 +64,34 @@ const WriteBlog = () => {
         }));
     };
 
+    const handleThumbnailChange = (event) => {
+        const thumbnail = event.target.files[0];
+        setThumbnail(thumbnail);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(blogContent);
-        return;
 
-        // if (blogContent.tags.length < 1) {
-        //     setAlertMessage({ type: "warning", message: "Please select tags." });
-        //     // console.log("Hello");
-        //     return;
-        // }
+        if (thumbnail) {
+            blogContent.thumbnail = thumbnail;
+        }
 
-        // try {
-        //     // console.log(blogContent);
-        //     const response = await BlogAPI.postBlog(blogContent);
-        //     // console.log(response);
-        //     // // Optionally, you can redirect the user to the newly created blog page
-        //     if (response.data.status === 201) {
-        //         navigate(`/blog/post/${response.data.id}`);
-        //     }
-        // } catch (error) {
-        //     console.error('Error posting blog:', error.message);
-        // }
+        if (blogContent.tags.length < 1) {
+            setAlertMessage({ type: "warning", message: "Please select tags." });
+            return;
+        }
+
+        try {
+            const response = await BlogAPI.postBlog({
+                ...blogContent,
+                tags: blogContent.tags // Ensure that tags are sent as an array
+            });
+            // const response = await BlogAPI.postBlog(blogContent);
+            // navigate(`/post/${response.data.id}`);
+            console.log(response);
+        } catch (error) {
+            console.error('Error posting blog:', error.message);
+        }
     };
 
     return (
@@ -125,8 +117,19 @@ const WriteBlog = () => {
                                 name="title"
                                 value={blogContent.title}
                                 onChange={handleChange}
-                                required
                                 maxLength={255}
+                            />
+                        </div>
+
+                        <div className="mb-2">
+                            <label htmlFor="thumbnail" className="form-label">Thumbnail</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                id="thumbnail"
+                                name="thumbnail"
+                                onChange={handleThumbnailChange}
+                                accept='image/*'
                             />
                         </div>
 
@@ -139,8 +142,7 @@ const WriteBlog = () => {
                                 name="description"
                                 value={blogContent.description}
                                 onChange={handleChange}
-                                required
-                                rows={4}
+                                rows={2}
                                 maxLength={500}
                             />
                         </div>
@@ -148,7 +150,7 @@ const WriteBlog = () => {
 
                     <div className="mb-3 col-md-6 p-3">
                         <label className="form-label">Select tags</label>
-                        <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             {allTags &&
                                 allTags.map((tag) => (
                                     <div className="form-check" key={tag.id}>

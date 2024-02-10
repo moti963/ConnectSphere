@@ -9,7 +9,7 @@ const BlogList = ({ blogs }) => {
                 {blogs && blogs.map(blog => (
                     <div key={blog.id} className="col-md-6 mb-4">
                         <div className="card h-100">
-                            {blog.thumbnail && <img src={"http://127.0.0.1:8000/" + blog.thumbnail} className="card-img-top" alt={blog.title} />}
+                            {blog.thumbnail && <img src={blog.thumbnail} className="card-img-top" alt={blog.title} style={{maxHeight: '18rem'}} />}
                             <div className="card-body">
                                 <h5 className="card-title">
                                     <Link to={`/post/${blog.id}`}>{blog.title}</Link>
