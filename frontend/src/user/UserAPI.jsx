@@ -5,8 +5,8 @@ import AuthAPI from "../auth/AuthAPI";
 const cookie = new Cookies();
 
 class UserAPI {
-    static baseUrl = "http://127.0.0.1:8000/users";
-
+    // static baseUrl = "http://127.0.0.1:8000/users";
+    static baseUrl = "https://connectsphere.pythonanywhere.com/users";
 
     static async sendRequest(url, method, body, isFileUpload = false) {
         try {
