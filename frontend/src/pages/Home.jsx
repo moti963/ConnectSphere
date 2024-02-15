@@ -6,6 +6,8 @@ import BlogList from '../blog/BlogList';
 // import NotFound from '../components/NotFound';
 import AlertMessage from '../components/AlertMessage';
 import noData from "../static/images/no_info_found.jpg";
+import UserAPI from "../user/UserAPI";
+import AuthAPI from '../auth/AuthAPI';
 
 
 const Home = () => {
@@ -21,6 +23,9 @@ const Home = () => {
   const handleCloseAlert = () => {
     setAlertMessage(null);
   }
+  console.log(BlogAPI.baseUrl);
+  console.log(AuthAPI.baseUrl);
+  console.log(UserAPI.baseUrl);
 
   useEffect(() => {
     const fetchData = async () => {

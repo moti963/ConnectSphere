@@ -1,11 +1,11 @@
 import axios from "axios";
 import { Cookies } from 'react-cookie';
-
+import configFile from "../dataset/dataStore";
 const cookie = new Cookies();
 
 class AuthAPI {
     // static baseUrl = "http://127.0.0.1:8000/auth";
-    static baseUrl = "https://connectsphere.pythonanywhere.com/auth";
+    static baseUrl = `${configFile.backendBaseUrl || configFile.localBaseUrl}auth`;
 
     static async SignupUser(body) {
         try {

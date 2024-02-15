@@ -3,7 +3,7 @@ import UserAPI from './UserAPI';
 import AlertMessage from '../components/AlertMessage';
 import UserProfileForm from '../forms/UserProfileForm';
 import noData from "../static/images/no_info_found.jpg";
-
+import configFile from '../dataset/dataStore';
 
 const UserProfileDisplay = () => {
   const [profile, setProfile] = useState(null);
@@ -54,7 +54,7 @@ const UserProfileDisplay = () => {
             {!editMode && (
               <div>
                 <img
-                  src={"http://127.0.0.1:8000" + profile.profile_img}
+                  src={`${configFile.backendBaseUrl || configFile.localBaseUrl}` + profile.profile_img}
                   alt="Profile"
                   className="rounded-circle img-thumbnail mb-3"
                   style={{ maxWidth: '200px', height: 'auto' }}

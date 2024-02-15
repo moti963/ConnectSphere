@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import userProfile from '../static/images/default_user.png';
+import configFile from '../dataset/dataStore';
 
 const BlogList = ({ blogs }) => {
     return (
@@ -9,7 +10,7 @@ const BlogList = ({ blogs }) => {
                 {blogs && blogs.map(blog => (
                     <div key={blog.id} className="col-md-6 mb-4">
                         <div className="card h-100">
-                            {blog.thumbnail && <img src={blog.thumbnail} className="card-img-top" alt={blog.title} style={{maxHeight: '18rem'}} />}
+                            {blog.thumbnail && <img src={blog.thumbnail} className="card-img-top" alt={blog.title} style={{ maxHeight: '18rem' }} />}
                             <div className="card-body">
                                 <h5 className="card-title">
                                     <Link to={`/post/${blog.id}`}>{blog.title}</Link>
@@ -19,7 +20,7 @@ const BlogList = ({ blogs }) => {
                             <div className="card-footer d-flex justify-content-between align-items-center">
                                 <div className="author">
                                     <Link to={`/profile/${blog.username}`}>
-                                        <img loading='lazy' src={blog.profile_img ? ("http://127.0.0.1:8000/" + blog.profile_img) : userProfile} alt={blog.user} className="rounded-circle img-thumbnail mb-3"
+                                        <img loading='lazy' src={blog.profile_img ? (`${configFile.backendBaseUrl || configFile.localBaseUrl}` + blog.profile_img) : userProfile} alt={blog.user} className="rounded-circle img-thumbnail mb-3"
                                             style={{ maxWidth: '42px', height: 'auto' }} />
                                         <span className="ml-2">{blog.username}</span>
                                     </Link>
@@ -29,9 +30,9 @@ const BlogList = ({ blogs }) => {
                             <div className="card-footer bg-transparent border-top">
                                 <div className="d-flex justify-content-between align-items-center">
                                     {/* <div className="meta"> */}
-                                        {/* <span><i className="mx-2 icon-heart"></i>{blog.likes} Likes</span> */}
-                                        {/* <span><i className="mx-2 icon-eye"></i>{blog.views} Views</span> */}
-                                        {/* <span><i className="mx-2 icon-comment"></i>{blog.comments} Comments</span> */}
+                                    {/* <span><i className="mx-2 icon-heart"></i>{blog.likes} Likes</span> */}
+                                    {/* <span><i className="mx-2 icon-eye"></i>{blog.views} Views</span> */}
+                                    {/* <span><i className="mx-2 icon-comment"></i>{blog.comments} Comments</span> */}
                                     {/* </div> */}
                                     <Link to={`/post/${blog.id}`} className="btn btn-sm btn-primary">
                                         Continue Reading

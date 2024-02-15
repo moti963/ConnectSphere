@@ -6,6 +6,7 @@ import BlogAPI from './BlogAPI';
 import NotFound from '../components/NotFound';
 // import AlertMessage from '../components/AlertMessage';
 import { Link } from 'react-router-dom';
+import configFile from '../dataset/dataStore';
 
 const BlogPost = () => {
     const { id } = useParams();
@@ -37,7 +38,7 @@ const BlogPost = () => {
             <h2>{blog.title}</h2>
             <p className="text-muted">By <Link to={`/profile/${blog.username}`}>{blog.username}</Link> | {blog.created_at}</p>
             {/* <p className="text-muted">Views: {blog.views}</p> */}
-            {blog.thumbnail && ( <img loading='lazy' className='my-2' src={"http://127.0.0.1:8000" + blog.thumbnail} alt="thumbnail" />)}
+            {blog.thumbnail && (<img loading='lazy' className='my-2' src={`${configFile.backendBaseUrl || configFile.localBaseUrl}` + blog.thumbnail} alt="thumbnail" />)}
             <p>{blog.description}</p>
             <p>{blog.tags.map(tag => <button key={tag.id} className="btn btn-info m-2">{tag.tag}</button>)}</p>
             <hr />

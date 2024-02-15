@@ -6,6 +6,7 @@ import '../static/css/Navbar.css';
 import profile from '../static/images/default_user.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from "../slices/authSlice";
+import configFile from "../dataset/dataStore";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const Navbar = () => {
                 <li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div className="profile-pic">
-                      <img src={(user_image) ? "http://127.0.0.1:8000" + user_image : profile} alt="User" />
+                      <img src={(user_image) ? `${configFile.backendBaseUrl || configFile.localBaseUrl}` + user_image : profile} alt="User" />
                     </div>
                   </a>
                   <ul

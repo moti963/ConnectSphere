@@ -4,6 +4,7 @@ import UserAPI from '../user/UserAPI';
 import NotFound from "../components/NotFound";
 import "../static/css/UserDetails.css";
 import userProfile from "../static/images/default_user.png";
+import configFile from '../dataset/dataStore';
 
 const UserDetail = () => {
   const [userDetails, setUserDetails] = useState(null);
@@ -48,7 +49,7 @@ const UserDetail = () => {
         <h2>Profile</h2>
         {userDetails.profile ? (
           <div className="user-card">
-            <img src={userDetails.profile.profile_img ? "http://127.0.0.1:8000" + userDetails.profile.profile_img : `${userProfile}`} alt="Profile" />
+            <img src={userDetails.profile.profile_img ? `${configFile.backendBaseUrl || configFile.localBaseUrl}` + userDetails.profile.profile_img : `${userProfile}`} alt="Profile" />
             <p><strong>Bio:</strong> {userDetails.profile.bio}</p>
             <p><strong>Location:</strong> {userDetails.profile.location}</p>
             <p><strong>Birth Date:</strong> {userDetails.profile.birth_date}</p>
