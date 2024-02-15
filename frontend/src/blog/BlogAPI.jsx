@@ -4,8 +4,9 @@ import { Cookies } from "react-cookie";
 const cookie = new Cookies();
 
 class BlogAPI {
-    static baseUrl = "http://127.0.0.1:8000/blog";
-
+    // static baseUrl = "http://127.0.0.1:8000/blog";
+    static baseUrl = "https://connectsphere.pythonanywhere.com/blog";
+    
     static async getAllBlogs() {
         try {
             const response = await axios.get(`${this.baseUrl}/blogs`, {
