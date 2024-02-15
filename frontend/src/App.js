@@ -8,6 +8,7 @@ import About from './pages/About';
 import BlogPost from './blog/BlogPost';
 import WriteBlog from './blog/WriteBlog';
 import UserHome from './user/UserHome';
+import UserDetail from './pages/UserDetail';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         </Route>
         <Route path='newpost' element={<WriteBlog />} />
         <Route path='post/:id' element={<BlogPost />} />
+        <Route path='profile/:username' element={<UserDetail />} />
       </Routes>
       <Footer />
     </BrowserRouter>

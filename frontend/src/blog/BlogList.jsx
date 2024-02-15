@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../static/images/logo192.png';
+import userProfile from '../static/images/default_user.png';
 
 const BlogList = ({ blogs }) => {
     return (
@@ -19,7 +19,7 @@ const BlogList = ({ blogs }) => {
                             <div className="card-footer d-flex justify-content-between align-items-center">
                                 <div className="author">
                                     <Link to={`/profile/${blog.username}`}>
-                                        <img src={blog.profile_img ? ("http://127.0.0.1:8000/" + blog.profile_img) : logo} alt={blog.user} className="rounded-circle img-thumbnail mb-3"
+                                        <img loading='lazy' src={blog.profile_img ? ("http://127.0.0.1:8000/" + blog.profile_img) : userProfile} alt={blog.user} className="rounded-circle img-thumbnail mb-3"
                                             style={{ maxWidth: '42px', height: 'auto' }} />
                                         <span className="ml-2">{blog.username}</span>
                                     </Link>
@@ -28,11 +28,11 @@ const BlogList = ({ blogs }) => {
                             </div>
                             <div className="card-footer bg-transparent border-top">
                                 <div className="d-flex justify-content-between align-items-center">
-                                    <div className="meta">
-                                        <span><i className="mx-2 icon-heart"></i>{blog.likes} Likes</span>
-                                        <span><i className="mx-2 icon-eye"></i>{blog.views} Views</span>
-                                        <span><i className="mx-2 icon-comment"></i>{blog.comments} Comments</span>
-                                    </div>
+                                    {/* <div className="meta"> */}
+                                        {/* <span><i className="mx-2 icon-heart"></i>{blog.likes} Likes</span> */}
+                                        {/* <span><i className="mx-2 icon-eye"></i>{blog.views} Views</span> */}
+                                        {/* <span><i className="mx-2 icon-comment"></i>{blog.comments} Comments</span> */}
+                                    {/* </div> */}
                                     <Link to={`/post/${blog.id}`} className="btn btn-sm btn-primary">
                                         Continue Reading
                                     </Link>

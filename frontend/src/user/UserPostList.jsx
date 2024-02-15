@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogAPI from '../blog/BlogAPI';
 import UserPostEdit from './UserPostEdit';
@@ -24,7 +24,10 @@ const UserPostList = ({ blogs }) => {
         setEditPost(null);
     };
 
-    console.log(editPost);
+    // console.log(editPost);
+    useEffect(() => {
+        setEditPost(null);
+    }, [blogs])
 
     return (
         <div className='container my-5'>
@@ -42,13 +45,13 @@ const UserPostList = ({ blogs }) => {
                                 <small className="text-muted">{blog.created_at}</small>
                             </div>
                             <div className="card-footer bg-transparent border-top">
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <div className="meta">
-                                        {/* <span><i className="mx-2 icon-heart"></i>{0} Likes</span> */}
-                                        <span className='m-1'>Views: <i className="mx-2 icon-eye"></i>{blog.views}</span>
-                                        {/* <span className='m-1'>Status: <i className="mx-2 icon-eye"></i>{blog.status}</span> */}
-                                        {/* <span><i className="mx-2 icon-comment"></i>{0} Comments</span> */}
-                                    </div>
+                                <div className="d-flex justify-content-around align-items-center">
+                                    {/* <div className="meta"> */}
+                                    {/* <span><i className="mx-2 icon-heart"></i>{0} Likes</span> */}
+                                    {/* <span className='m-1'>Views: <i className="mx-2 icon-eye"></i>{blog.views}</span> */}
+                                    {/* <span className='m-1'>Status: <i className="mx-2 icon-eye"></i>{blog.status}</span> */}
+                                    {/* <span><i className="mx-2 icon-comment"></i>{0} Comments</span> */}
+                                    {/* </div> */}
                                     <Link to={`/post/${blog.id}`} className="btn btn-sm btn-primary">
                                         Continue Reading
                                     </Link>
@@ -62,7 +65,7 @@ const UserPostList = ({ blogs }) => {
                             </div>
                         </div>
                     </div>
-                ))) : (<h1 className='text-center'>No post found!!</h1>)}
+                ))) : (null)}
             </div>
             {editPost ? (<UserPostEdit id={editPost} />) : (null)}
             {editPost ? (<button className="btn btn-sm btn-secondary" onClick={() => handleCancelEdit()}>

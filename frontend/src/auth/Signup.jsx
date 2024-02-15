@@ -14,9 +14,11 @@ const Signup = () => {
         last_name: '',
     });
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
     const navigate = useNavigate();
     const [alertMessage, setAlertMessage] = useState(null);
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -31,7 +33,7 @@ const Signup = () => {
 
         // Perform password match validation
         if (user.password !== user.password2) {
-            setAlertMessage({ type: "danger", message: 'Passwords do not match!' });
+            setAlertMessage({ type: "error", message: 'Passwords do not match!' });
             return;
         }
 
@@ -40,14 +42,17 @@ const Signup = () => {
             // const response = await signup(user);
             const response = await AuthAPI.SignupUser(user);
             // If signup is successful, navigate to the login page
-            console.log(response);
-            if (response.status !== 200) {
-                setAlertMessage({ type: "danger", message: response.message });
+            // console.log(response);
+            if (response.status !== 201) {
+                setAlertMessage({ type: "error", message: response.message });
+                return;
             }
+            setAlertMessage({ type: "success", message: 'Signup successful! Please login.' });
+            await new Promise(r => setTimeout(r, 2000));
             navigate('/user/login');
         } catch (error) {
             // Handle errors and set the error message
-            setAlertMessage({ type: "danger", message: 'Failed!!. Please try again.' });
+            setAlertMessage({ type: "error", message: 'Failed!!. Please try again.' });
             // setAlertMessage('Failed!!. Please try again.');
         }
     };
@@ -76,9 +81,8 @@ const Signup = () => {
         <div className="container mt-5 mb-5">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-                    {alertMessage && (
-                        <AlertMessage type={alertMessage.type} message={alertMessage.message} />
-                    )}
+                    {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
                     <div className="card shadow">
                         <div className="card-body">
                             <h3 className="card-title text-center mb-3">Sign Up</h3>
@@ -91,6 +95,7 @@ const Signup = () => {
                                         name="first_name"
                                         value={user.first_name}
                                         onChange={handleChange}
+                                        auto
                                         required
                                     />
                                 </div>

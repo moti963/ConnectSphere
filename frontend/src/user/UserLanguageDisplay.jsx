@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import UserAPI from './UserAPI';
 import UserLanguageForm from '../forms/UserLanguageForm';
 import AlertMessage from '../components/AlertMessage';
+import noData from "../static/images/no_info_found.jpg";
+
 
 
 const UserLanguageDisplay = () => {
@@ -16,7 +18,7 @@ const UserLanguageDisplay = () => {
             setLanguages(response);
         } catch (error) {
             console.log(error.message);
-            setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
+            // setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
         }
     }
 
@@ -93,8 +95,10 @@ const UserLanguageDisplay = () => {
             ) : null}
 
             {(!selectedLanguage && !isAddingNewLanguage && (!languages || languages.length === 0)) ? (
-                <h1 className='m-2'>No information found, Please add...</h1>
-            ) : null}
+                <div className='container'>
+                    <img className='m-2' src={noData} alt="No data" />
+                    <h1 className='m-2'>No language's information found, Please add...</h1>
+                </div>) : null}
 
 
             {/* Button to trigger adding a new Language */}

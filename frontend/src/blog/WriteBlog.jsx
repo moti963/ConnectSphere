@@ -5,27 +5,24 @@ import AlertMessage from '../components/AlertMessage';
 import { useNavigate } from 'react-router-dom';
 import BlogAPI from './BlogAPI';
 import { useSelector } from 'react-redux';
-import allTagsData from '../dataset/tags.json';
 
 const WriteBlog = () => {
-    const [blogContent, setBlogContent] = useState({
-        content: '',
-        title: '',
-        thumbnail: null,
-        description: '', // Corrected typo from "discription" to "description"
-        status: 'published',
-        tags: []
-    });
+    const [title, setTitle] = useState('');
+    const [thumbnail, setThumbnail] = useState(null);
+    const [description, setDescription] = useState('');
+    const [status, setStatus] = useState('published');
+    const [content, setContent] = useState('');
+    const [tags, setTags] = useState([]);
     const [allTags, setAllTags] = useState([]);
     const [alertMessage, setAlertMessage] = useState(null);
-    const [thumbnail, setThumbnail] = useState(null);
 
     const navigate = useNavigate();
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     useEffect(() => {
         const fetchData = async () => {
-            setAllTags(allTagsData);
+            const response = await BlogAPI.getAllTags();
+            setAllTags(response.data);
         };
 
         fetchData();
@@ -36,32 +33,18 @@ const WriteBlog = () => {
     }, [isAuthenticated, navigate]);
 
     const handleContentChange = (value) => {
-        setBlogContent((prev) => ({
-            ...prev,
-            content: value,
-        }));
+        setContent(value);
     };
 
     const handleTagsChange = (event) => {
-        const { name, value, checked } = event.target;
+        const { value, checked } = event.target;
 
         // If checked, add the tag to the list, otherwise remove it
         const updatedTags = checked
-            ? [...blogContent.tags, value]
-            : blogContent.tags.filter(tag => tag !== value);
+            ? [...tags, value]
+            : tags.filter(tag => tag !== value);
 
-        setBlogContent((prev) => ({
-            ...prev,
-            [name]: updatedTags,
-        }));
-    };
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setBlogContent((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setTags(updatedTags);
     };
 
     const handleThumbnailChange = (event) => {
@@ -72,33 +55,46 @@ const WriteBlog = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (thumbnail) {
-            blogContent.thumbnail = thumbnail;
-        }
-
-        if (blogContent.tags.length < 1) {
+        if (tags.length < 1) {
             setAlertMessage({ type: "warning", message: "Please select tags." });
             return;
         }
 
+        const formData = new FormData();
+        formData.append('title', title);
+        if (thumbnail) {
+            formData.append('thumbnail', thumbnail);
+        }
+        formData.append('description', description);
+        formData.append('status', status);
+        formData.append('content', content);
+        tags.forEach(tag => formData.append('tags', tag));
+
         try {
-            const response = await BlogAPI.postBlog({
-                ...blogContent,
-                tags: blogContent.tags // Ensure that tags are sent as an array
-            });
-            // const response = await BlogAPI.postBlog(blogContent);
+            const response = await BlogAPI.postBlog(formData);
             // navigate(`/post/${response.data.id}`);
-            console.log(response);
+            setAlertMessage({ type: "success", message: "Blog created successfully." });
+            console.log(response.data);
+            setTitle('');
+            setThumbnail(null);
+            setDescription('');
+            setTags([]);
+            setContent('');
+            event.target.reset();
         } catch (error) {
+            setAlertMessage({ type: "danger", message: "Some error occured, please try again." });
             console.error('Error posting blog:', error.message);
         }
     };
 
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
     return (
         <div className='container-fluid my-5'>
-            {alertMessage ? (
-                <AlertMessage message={alertMessage.message} />
-            ) : null}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
 
             <h3 className='text-bg-secondary rounded p-2'>New Blog</h3>
 
@@ -115,9 +111,10 @@ const WriteBlog = () => {
                                 className="form-control"
                                 id="title"
                                 name="title"
-                                value={blogContent.title}
-                                onChange={handleChange}
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
                                 maxLength={255}
+                                required
                             />
                         </div>
 
@@ -140,10 +137,11 @@ const WriteBlog = () => {
                                 className="form-control"
                                 id="description"
                                 name="description"
-                                value={blogContent.description}
-                                onChange={handleChange}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
                                 rows={2}
                                 maxLength={500}
+                                required
                             />
                         </div>
                     </div>
@@ -160,7 +158,7 @@ const WriteBlog = () => {
                                             id={tag.id}
                                             name="tags"
                                             value={tag.tag}
-                                            checked={blogContent.tags.includes(tag.tag)}
+                                            checked={tags.includes(tag.tag)}
                                             onChange={handleTagsChange}
                                         />
                                         <label className="form-check-label" htmlFor={tag.id}>
@@ -174,8 +172,8 @@ const WriteBlog = () => {
                             className='form-control my-2'
                             name="status"
                             id="status"
-                            value={blogContent.status}
-                            onChange={handleChange}
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
                         >
                             <option value="published">Publish</option>
                             <option value="draft">Make draft</option>
@@ -185,7 +183,7 @@ const WriteBlog = () => {
                 </div>
 
                 <ReactQuill
-                    value={blogContent.content}
+                    value={content}
                     name="content"
                     className='shadow form-control p-2'
                     onChange={handleContentChange}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 // import img from '../static/images/logo512.png';
 import { login } from '../slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import AlertMessage from '../components/AlertMessage';
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -13,7 +14,7 @@ const Login = () => {
     const dispatch = useDispatch();
 
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
         const user = {
             username: username,
@@ -22,16 +23,26 @@ const Login = () => {
 
         try {
             dispatch(login(user));
-            navigate("/");
+            if (isAuthenticated) {
+                navigate("/");
+            }
+            else {
+                await new Promise(r => setTimeout(r, 2000));
+                throw Error;
+            }
         } catch (error) {
             console.error("Error in login: ", error.message);
-            setAlertMessage('Invalid credentials. Please try again.');
+            setAlertMessage({ type: "error", message: 'Invalid credentials. Please try again.' });
         }
     };
 
     const handleReset = () => {
         setUsername('');
         setPassword('');
+        setAlertMessage(null);
+    }
+
+    const handleCloseAlert = () => {
         setAlertMessage(null);
     }
 
@@ -43,17 +54,14 @@ const Login = () => {
     }, [isAuthenticated, navigate]);
 
     return (
-        <div className="container mt-5">
+        <div className="container my-5">
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card shadow">
                         <div className="card-body">
                             <h3 className="card-title text-center my-5">Sign In</h3>
-                            {alertMessage && (
-                                <div className="alert alert-danger" role="alert">
-                                    {alertMessage}
-                                </div>
-                            )}
+                            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
                             <form onSubmit={submit}>
                                 <div className="form-group">
                                     <label>Username</label>

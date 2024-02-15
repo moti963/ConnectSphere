@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UserAPI from './UserAPI';
 import AlertMessage from '../components/AlertMessage';
 import UserSocialMediaForm from '../forms/UserSocialMediaForm';
+import noData from "../static/images/no_info_found.jpg";
 
 
 const UserSocialMediaDisplay = () => {
@@ -15,8 +16,8 @@ const UserSocialMediaDisplay = () => {
             const response = await UserAPI.getUserSocialMedia();
             setSocialMedia(response);
         } catch (error) {
-            // console.log(error.messages);
-            setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
+            console.log(error);
+            // setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
         }
     }
     useEffect(() => { fetchUserSocialMedia(); }, []);
@@ -94,8 +95,10 @@ const UserSocialMediaDisplay = () => {
             ) : null}
 
             {(!selectedMedia && !isAddingNewMedia && (!socialMedia || socialMedia.length === 0)) ? (
-                <h1 className='m-2'>No information found, Please add...</h1>
-            ) : null}
+                <div className='container'>
+                    <img className='m-2' src={noData} alt="No data" />
+                    <h1 className='m-2'>No social-media's information found, Please add...</h1>
+                </div>) : null}
 
             {/* Button to trigger adding a new Media */}
             {!isAddingNewMedia && (

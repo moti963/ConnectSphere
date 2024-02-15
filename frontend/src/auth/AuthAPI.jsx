@@ -15,9 +15,9 @@ class AuthAPI {
             });
             return response;
         } catch (error) {
-            if (error.response) {
-                return error.response;
-            }
+            // if (error.response) {
+            //     return error.response;
+            // }
             // console.log(error);
             throw error;
         }
@@ -64,10 +64,10 @@ class AuthAPI {
                 throw new Error('Both refresh_token and access_token are required for logout.');
             }
         } catch (error) {
-            console.log(error.message);
-            if (error.response) {
-                return error.response;
-            }
+            // console.log(error.message);
+            // if (error.response) {
+            //     return error.response;
+            // }
             throw error;
         }
     }
@@ -83,9 +83,9 @@ class AuthAPI {
             });
             return response;
         } catch (error) {
-            if (error.response) {
-                return error.response;
-            }
+            // if (error.response) {
+            //     return error.response;
+            // }
             throw error;
         }
     }
@@ -104,9 +104,9 @@ class AuthAPI {
             // console.log("In Access");
             return response;
         } catch (error) {
-            if (error.response) {
-                return error.response;
-            }
+            // if (error.response) {
+            //     return error.response;
+            // }
             // Other access token verification errors
             // console.log(error.message);
             throw error;
@@ -125,7 +125,7 @@ class AuthAPI {
             // console.log(response);
             return response;
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             // console.log(error.message);
             throw error;
         }

@@ -25,5 +25,5 @@ urlpatterns = [
     path('social-media/<int:pk>/', views.UserSocialMediaView.as_view(), name='user-social-media-detail'),
     path('languages/', views.UserLanguageView.as_view(), name='user-language-list'),
     path('languages/<int:pk>/', views.UserLanguageView.as_view(), name='user-language-detail'),
-    # path("user/<str:username>/", views.OtherUserDetailsView.as_view(), name="other-user-details"),
+    path("user/<str:username>/", views.UserDetailsAPIView.as_view(), name="user-details"),
 ]

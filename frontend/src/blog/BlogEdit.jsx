@@ -99,23 +99,29 @@ const BlogEdit = () => {
 
         try {
             const response = await BlogAPI.updateBlog(id, blogContent);
+            setAlertMessage({ type: "success", message: "Post updated successfully." });
             if (response.data.status === 200) {
                 navigate(`/blog/post/${id}`);
             }
         } catch (error) {
             console.error('Error updating blog:', error.message);
+            setAlertMessage({ type: "error", message: "Some error occured!!" });
         }
     };
 
+
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
     return (
         <div className='container-fluid my-5'>
-            {alertMessage ? (
-                <AlertMessage message={alertMessage.message} />
-            ) : null}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
 
             <h3 className='text-bg-secondary rounded p-2'>Edit Blog</h3>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} id='blogForm'>
                 <button className='btn btn-success my-3 me-auto' type="submit">
                     Update
                 </button>

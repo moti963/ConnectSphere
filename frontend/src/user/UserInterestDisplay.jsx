@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UserAPI from './UserAPI';
 import AlertMessage from '../components/AlertMessage';
 import UserInterestForm from '../forms/UserInterestForm';
+import noData from "../static/images/no_info_found.jpg";
 
 
 const UserInterestDisplay = () => {
@@ -16,7 +17,7 @@ const UserInterestDisplay = () => {
             setInterests(response);
         } catch (error) {
             console.log(error.message);
-            setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
+            // setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
 
         }
     };
@@ -95,8 +96,10 @@ const UserInterestDisplay = () => {
             ) : null}
 
             {(!selectedInterest && !isAddingNewInterest && (!interests || interests.length === 0)) ? (
-                <h1 className='m-2'>No information found, Please add...</h1>
-            ) : null}
+                <div className='container'>
+                    <img className='m-2' src={noData} alt="No data" />
+                    <h1 className='m-2'>No interest's information found, Please add...</h1>
+                </div>) : null}
 
             {/* Button to trigger adding a new Interest */}
             {!isAddingNewInterest && (

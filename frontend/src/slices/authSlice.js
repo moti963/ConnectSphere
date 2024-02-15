@@ -97,28 +97,28 @@ export const { loginSuccess, loginFailure, logout, refreshAccessTokenSuccess, re
 export default authSlice.reducer;
 
 export const login = (userData) => async (dispatch) => {
-    try {
-        const response = await AuthAPI.LoginUser(userData);
-        dispatch(loginSuccess(response.data));
-    } catch (error) {
-        dispatch(loginFailure(error.message));
-    }
+  try {
+    const response = await AuthAPI.LoginUser(userData);
+    dispatch(loginSuccess(response.data));
+  } catch (error) {
+    dispatch(loginFailure(error.message));
+  }
 };
 
 export const logoutUser = () => async (dispatch) => {
-    try {
-        await AuthAPI.logoutUser();
-        dispatch(logout());
-    } catch (error) {
-        console.error(error);
-    }
+  try {
+    await AuthAPI.logoutUser();
+    dispatch(logout());
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const refreshAccessToken = () => async (dispatch) => {
-    try {
-        const response = await AuthAPI.refreshAccessToken();
-        dispatch(refreshAccessTokenSuccess(response.data));
-    } catch (error) {
-        dispatch(refreshAccessTokenFailure(error.message));
-    }
+  try {
+    const response = await AuthAPI.refreshAccessToken();
+    dispatch(refreshAccessTokenSuccess(response.data));
+  } catch (error) {
+    dispatch(refreshAccessTokenFailure(error.message));
+  }
 };

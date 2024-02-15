@@ -51,8 +51,6 @@ const UserHome = () => {
         setSelectedNavItem(navItem);
     };
 
-
-
     const renderProfileContent = () => {
         switch (selectedNavItem) {
             case 'account': return <UserAccount />;

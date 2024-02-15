@@ -3,7 +3,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 // import logo from '../static/images/logo2.png';
 import '../static/css/Navbar.css';
-import profile from '../static/images/logo192.png';
+import profile from '../static/images/default_user.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from "../slices/authSlice";
 

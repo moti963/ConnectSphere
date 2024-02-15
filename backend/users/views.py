@@ -1,8 +1,8 @@
 # from django.shortcuts import render
 from rest_framework.views import APIView
-# from rest_framework import generics
+from rest_framework import generics
 from .models import UserProfile, UserContact, UserEducation, UserWorkExperience, UserSkill, UserProject, UserCertification, UserInterest, UserSocialMedia, UserLanguage
-from .serializers import UserProfileSerializer, UserContactSerializer, UserEducationSerializer, UserWorkExperienceSerializer, UserSkillSerializer, UserProjectSerializer, UserCertificationSerializer, UserInterestSerializer, UserSocialMediaSerializer, UserLanguageSerializer, UserSerializer
+from .serializers import UserProfileSerializer, UserContactSerializer, UserEducationSerializer, UserWorkExperienceSerializer, UserSkillSerializer, UserProjectSerializer, UserCertificationSerializer, UserInterestSerializer, UserSocialMediaSerializer, UserLanguageSerializer, UserSerializer, UserBlogSerializer
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,6 +12,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 # from rest_framework.parsers import MultiPartParser
 # from django.core.files.base import ContentFile
+from blogapp.models import Blog
 # Create your views here.
 
 class UserView(APIView):
@@ -393,3 +394,175 @@ class UserLanguageView(APIView):
             return Response({'error': 'User does not have permission for this action'}, status=status.HTTP_403_FORBIDDEN)
         user_language.delete()  # Delete the UserLanguage instance
         return Response({'message': 'UserLanguage deleted successfully'}, status=status.HTTP_200_OK)
+
+
+class UserDetailsAPIView(APIView):
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username, is_active=True, is_staff=False)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        user_serializer = UserSerializer(user)
+        user_data = user_serializer.data
+
+        try:
+            profile = UserProfile.objects.get(user=user)
+            user_data['profile'] = UserProfileSerializer(profile).data
+        except UserProfile.DoesNotExist:
+            user_data['profile'] = None
+        
+        try:
+            user_data['contacts'] = UserContactSerializer(UserContact.objects.filter(user=user), many=True).data
+        except:
+            user_data['contacts'] = None
+        
+        try:
+            user_data['educations'] = UserEducationSerializer(UserEducation.objects.filter(user=user), many=True).data
+        except:
+            user_data['educations'] = None
+        
+        try:
+            user_data['experiences'] = UserWorkExperienceSerializer(UserWorkExperience.objects.filter(user=user), many=True).data
+        except:
+            user_data['experiences'] = None
+        
+        try:
+            user_data['skills'] = UserSkillSerializer(UserSkill.objects.filter(user=user), many=True).data
+        except:
+            user_data['skills'] = None
+        
+        try:
+            user_data['projects'] = UserProjectSerializer(UserProject.objects.filter(user=user), many=True).data
+        except:
+            user_data['projects'] = None
+        
+        try:
+            user_data['certifications'] = UserCertificationSerializer(UserCertification.objects.filter(user=user), many=True).data
+        except:
+            user_data['certifications'] = None
+        
+        try:
+            user_data['interests'] = UserInterestSerializer(UserInterest.objects.filter(user=user), many=True).data
+        except:
+            user_data['interests'] = None
+        
+        try:
+            user_data['social_media'] = UserSocialMediaSerializer(UserSocialMedia.objects.filter(user=user), many=True).data
+        except:
+            user_data['social_media'] = None
+        
+        try:
+            user_data['languages'] = UserLanguageSerializer(UserLanguage.objects.filter(user=user), many=True).data
+        except:
+            user_data['languages'] = None
+        
+        try:
+            user_data['blogs'] = UserBlogSerializer(Blog.objects.filter(user=user), many=True).data
+        except:
+            user_data['blogs'] = None
+
+        return Response(user_data, status=status.HTTP_200_OK)
+
+
+# class UserDetailsAPIView(APIView):
+#     def get(self, request, username):
+#         try:
+#             # Retrieve user by username
+#             user = User.objects.get(username=username)
+
+#             # Serialize user details
+#             serializer = UserDetailSerializer(user)
+
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+
+#         except User.DoesNotExist:
+#             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+#         except Exception as e:
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# class UserDetailsAPIView(APIView):
+#     def get(self, request, username):
+#         try:
+#             # Retrieve user by username
+#             user = User.objects.get(username=username)
+#             user_serializer = UserSerializer(user)
+
+#             profile_serializer = None
+#             contact_serializer = None
+#             education_serializer = None
+#             experience_serializer = None
+#             skill_serializer = None
+#             project_serializer = None
+#             certification_serializer = None
+#             interest_serializer = None
+#             social_media_serializer = None
+#             language_serializer = None
+#             blog_serializer = None
+
+
+#             try:
+#                 profile_serializer = UserProfileSerializer(UserProfile.objects.get(user=user))
+#             except:
+#                 pass
+#             try:
+#                 contact_serializer = UserContactSerializer(UserContact.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 education_serializer = UserEducationSerializer(UserEducation.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 experience_serializer = UserWorkExperienceSerializer(UserWorkExperience.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 skill_serializer = UserSkillSerializer(UserSkill.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 project_serializer = UserProjectSerializer(UserProject.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 certification_serializer = UserCertificationSerializer(UserCertification.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 interest_serializer = UserInterestSerializer(UserInterest.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 social_media_serializer = UserSocialMediaSerializer(UserSocialMedia.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 language_serializer = UserLanguageSerializer(UserLanguage.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+#             try:
+#                 blog_serializer = UserBlogSerializer(Blog.objects.filter(user=user), many=True)
+#             except:
+#                 pass
+
+#             # Construct response data
+#             user_data = user_serializer.data
+#             user_data['profile'] = profile_serializer.data if profile_serializer else None
+#             user_data['contacts'] = contact_serializer.data if contact_serializer else None
+#             user_data['educations'] = education_serializer.data if education_serializer else None
+#             user_data['experiences'] = experience_serializer.data if experience_serializer else None
+#             user_data['skills'] = skill_serializer.data if skill_serializer else None
+#             user_data['projects'] = project_serializer.data if profile_serializer else None
+#             user_data['certifications'] = certification_serializer.data if certification_serializer else None
+#             user_data['interests'] = interest_serializer.data if interest_serializer else None
+#             user_data['social_media'] = social_media_serializer.data if social_media_serializer else None
+#             user_data['languages'] = language_serializer.data if language_serializer else None
+#             user_data['blogs'] = blog_serializer.data if blog_serializer else None
+
+#             return Response(user_data, status=status.HTTP_200_OK)
+
+#         except User.DoesNotExist:
+#             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+#         except Exception as e:
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

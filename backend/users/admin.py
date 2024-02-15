@@ -12,6 +12,8 @@ from .models import (
     UserInterest,
     UserSocialMedia,
     UserLanguage,
+    UserResume,
+    UserCoverLetter
 )
 
 @admin.register(UserProfile)
@@ -53,3 +55,11 @@ class UserSocialMediaAdmin(admin.ModelAdmin):
 @admin.register(UserLanguage)
 class UserLanguageAdmin(admin.ModelAdmin):
     list_display = ['user', 'language_name', 'proficiency_level']
+
+@admin.register(UserResume)
+class UserResumeAdmin(admin.ModelAdmin):
+    list_display = ['user', 'title']
+
+@admin.register(UserCoverLetter)
+class UserCoverLetterAdmin(admin.ModelAdmin):
+    list_display = ['user', 'title']

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UserAPI from './UserAPI';
 import UserCertificationForm from '../forms/UserCertificationForm';
 import AlertMessage from '../components/AlertMessage';
+import noData from "../static/images/no_info_found.jpg";
 
 const UserCertificationDisplay = () => {
     const [certifications, setCertifications] = useState(null);
@@ -15,7 +16,7 @@ const UserCertificationDisplay = () => {
             setCertifications(response);
         } catch (error) {
             console.error(error.message);
-            setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
+            // setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
         }
     };
 
@@ -67,7 +68,7 @@ const UserCertificationDisplay = () => {
 
             {/* Display existing certifications */}
             {(!selectedCertification && !isAddingNewCertification && certifications && certifications.length > 0) ? (
-                <div className="row">
+                <div className="row my-5">
                     {certifications.map((certification, index) => (
                         <div key={index} className="col-md-6 mb-4">
                             <div className="card">
@@ -96,7 +97,10 @@ const UserCertificationDisplay = () => {
             ) : null}
 
             {(!selectedCertification && !isAddingNewCertification && (!certifications || certifications.length === 0)) ? (
-                <h1 className='m-2'>No information found, Please add...</h1>
+                <div className='container'>
+                    <img className='m-2' src={noData} alt="No data" />
+                    <h1 className='m-2'>No certification information found, Please add...</h1>
+                </div>
             ) : null}
 
             {/* Button to trigger adding a new Certification */}

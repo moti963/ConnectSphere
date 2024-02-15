@@ -20,6 +20,34 @@ class BlogAPI {
         }
     }
 
+    static async getAllBlogsByPageNumber() {
+        try {
+            const response = await axios.get(`${this.baseUrl}/blogs`, {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            return response;
+        } catch (error) {
+            console.error("Error in fetching blogs:", error.message);
+            throw error;
+        }
+    }
+
+    static async getAllBlogsByUrl(url) {
+        try {
+            const response = await axios.get(url, {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            return response;
+        } catch (error) {
+            console.error("Error in fetching blogs:", error.message);
+            throw error;
+        }
+    }
+
     static async getBlogDetails(id) {
         try {
             const response = await axios.get(`${this.baseUrl}/blogs/${id}`, {

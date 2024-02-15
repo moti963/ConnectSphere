@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import UserAPI from './UserAPI';
 import AlertMessage from '../components/AlertMessage';
 import UserSkillForm from '../forms/UserSkillForm';
+import noData from "../static/images/no_info_found.jpg";
+
 
 const UserSkillDisplay = () => {
   const [skills, setSkills] = useState(null);
@@ -15,7 +17,7 @@ const UserSkillDisplay = () => {
       setSkills(response);
     } catch (error) {
       console.log(error.message);
-      setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
+      // setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
     }
   }
 
@@ -92,7 +94,10 @@ const UserSkillDisplay = () => {
       ) : null}
 
       {(!isAddingNewSkill && !selectedSkill && (!skills || skills.length === 0)) ? (
-        <h1 className='m-2'>No information found, Please add...</h1>
+        <div className='container'>
+          <img className='m-2' src={noData} alt="No data" />
+          <h1 className='m-2'>No skill's information found, Please add...</h1>
+        </div>
       ) : null}
 
       {!isAddingNewSkill && (

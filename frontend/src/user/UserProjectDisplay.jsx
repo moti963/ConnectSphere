@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UserAPI from './UserAPI';
 import AlertMessage from '../components/AlertMessage';
 import UserProjectForm from '../forms/UserProjectForm';
+import noData from "../static/images/no_info_found.jpg";
 
 const UserProjectDisplay = () => {
     const [projects, setProjects] = useState(null);
@@ -15,7 +16,7 @@ const UserProjectDisplay = () => {
             setProjects(response);
         } catch (error) {
             console.log(error.message);
-            setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
+            // setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
         }
     }
 
@@ -94,8 +95,10 @@ const UserProjectDisplay = () => {
             ) : null}
 
             {(!selectedProject && !isAddingNewProject && (!projects || projects.length === 0)) ? (
-                <h1 className='m-2'>No information found, Please add...</h1>
-            ) : null}
+                <div className='container'>
+                    <img className='m-2' src={noData} alt="No data" />
+                    <h1 className='m-2'>No project's information found, Please add...</h1>
+                </div>) : null}
 
             {/* Button to trigger adding a new Project */}
             {!isAddingNewProject && (

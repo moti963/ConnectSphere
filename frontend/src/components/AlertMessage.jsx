@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const AlertMessage = ({ type, message, onClose }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
   let alertClass = '';
 
   switch (type) {
@@ -23,8 +25,17 @@ const AlertMessage = ({ type, message, onClose }) => {
       alertClass = 'alert-info';
   }
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsVisible(false);
+      onClose(); // Trigger onClose after timeout
+    }, 9000); // 9 seconds timeout
+
+    return () => clearTimeout(timeout); // Cleanup timeout on unmount
+  }, [onClose]);
+
   return (
-    <div className={`alert ${alertClass} alert-dismissible fade show`} role="alert">
+    <div className={`alert ${alertClass} alert-dismissible fade show ${isVisible ? 'd-block' : 'd-none'}`} role="alert">
       {message}
       <button
         type="button"

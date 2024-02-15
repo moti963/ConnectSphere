@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import UserAPI from './UserAPI';
 import UserContactForm from '../forms/UserContactForm';
 import AlertMessage from '../components/AlertMessage';
+import noData from "../static/images/no_info_found.jpg";
+
 
 const UserContactDisplay = () => {
   const [contacts, setContacts] = useState(null);
@@ -17,7 +19,7 @@ const UserContactDisplay = () => {
       setContacts(response);
     } catch (error) {
       console.log(error.message);
-      setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
+      // setAlertMessage({ type: "danger", message: "Unable to fetch your details." });
     }
   };
 
@@ -97,8 +99,10 @@ const UserContactDisplay = () => {
       ) : null}
 
       {(!selectedContact && !isAddingNewContact && (!contacts || contacts.length === 0)) ? (
-        <h1 className='m-2'>No information found, Please add...</h1>
-      ) : null}
+        <div className='container'>
+          <img className='m-2' src={noData} alt="No data" />
+          <h1 className='m-2'>No contact's information found, Please add...</h1>
+        </div>) : null}
 
       {/* Button to trigger adding a new contact */}
       {!isAddingNewContact && (

@@ -51,3 +51,11 @@ class Blog(models.Model):
 #         indexes = [
 #             models.Index(fields=['tag', 'blog']),
 #         ]
+    
+
+# Model for implementing recommended system
+class UserActivity(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, default=None)
+    time_stamp = models.DateTimeField(auto_now_add=True)
+    reading = models.PositiveIntegerField(default=1)

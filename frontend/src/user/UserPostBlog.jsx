@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import BlogAPI from '../blog/BlogAPI';
 import UserPostList from './UserPostList';
+import noData from "../static/images/no_info_found.jpg";
 
 const UserPostBlog = ({ blogType }) => {
   const [blogs, setBlogs] = useState([]);
@@ -11,7 +12,7 @@ const UserPostBlog = ({ blogType }) => {
       try {
         if (blogType === "published") {
           const response = await BlogAPI.getMyPublishedBlogs();
-          console.log(response.data);
+          // console.log(response.data);
           setBlogs(response.data);
         }
         else if (blogType === "draft") {
@@ -29,7 +30,10 @@ const UserPostBlog = ({ blogType }) => {
 
   return (
     <div className='container-fluid my-5'>
-      {blogs ? (<UserPostList blogs={blogs} />) : (<h3 className='text-center'>No post found!!</h3>)}
+      {(blogs && blogs.length > 0) ? (<UserPostList blogs={blogs} />) : (<div className='container'>
+        <img className='m-2' src={noData} alt="No data" />
+        <h1 className='m-2'>{`No ${blogType} post found, Please add...`}</h1>
+      </div>)}
     </div >
   );
 };

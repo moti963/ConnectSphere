@@ -7,7 +7,7 @@ class UserProfile(models.Model):
     class Gender(models.TextChoices):
         Male = 'male', 'Male'
         Female = 'female', 'Female'
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default="default_user.png")
     profile_img = models.ImageField(upload_to="profile/", null=True, blank=True, default="")
     bio = models.TextField(max_length=1000, null=False, blank=False, default="")
     location = models.CharField(max_length=255, null=False, blank=False, default="")
@@ -198,4 +198,21 @@ class UserLanguage(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Language: {self.language_name} ({self.proficiency_level})"
+    
+
+class UserResume(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    title = models.CharField(max_length=100, null=False, blank=False, default="")
+    file = models.FileField(upload_to='resumes/')
+
+    def __str__(self):
+        return self.title
+
+class UserCoverLetter(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    title = models.CharField(max_length=100, null=False, blank=False, default="")
+    file = models.FileField(upload_to='cover_letters/')
+
+    def __str__(self):
+        return self.title
 

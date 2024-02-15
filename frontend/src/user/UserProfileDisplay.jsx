@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import UserAPI from './UserAPI';
 import AlertMessage from '../components/AlertMessage';
 import UserProfileForm from '../forms/UserProfileForm';
+import noData from "../static/images/no_info_found.jpg";
+
 
 const UserProfileDisplay = () => {
   const [profile, setProfile] = useState(null);
@@ -14,7 +16,8 @@ const UserProfileDisplay = () => {
       // console.log(response);
       setProfile(response);
     } catch (error) {
-      setAlertMessage({ type: 'danger', message: 'Error fetching profile. Please try again later.' });
+      // setAlertMessage({ type: 'danger', message: 'Error fetching profile. Please try again later.' });
+      console.log("error in fetching profie", error);
     }
   };
 
@@ -79,8 +82,10 @@ const UserProfileDisplay = () => {
       ) : null}
 
       {(!editMode && (!profile || profile.length === 0)) ? (
-        <h1 className='m-2'>No information found, Please add...</h1>
-      ) : null}
+        <div className='container'>
+          <img className='m-2' src={noData} alt="No data" />
+          <h1 className='m-2'>No profile's information found, Please add...</h1>
+        </div>) : null}
 
       {!profile && (<button
         className="btn btn-sm btn-primary"

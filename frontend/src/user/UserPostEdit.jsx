@@ -1,4 +1,3 @@
-// BlogEdit.jsx
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -8,19 +7,15 @@ import BlogAPI from '../blog/BlogAPI';
 import { useSelector } from 'react-redux';
 import allTagsData from '../dataset/tags.json';
 
-
 const UserPostEdit = ({ id }) => {
-    const [blogContent, setBlogContent] = useState({
-        title: '',
-        thumbnail: null,
-        description: '',
-        content: '',
-        status: 'published',
-        tags: [],
-    });
+    const [title, setTitle] = useState('');
+    const [thumbnail, setThumbnail] = useState(null);
+    const [description, setDescription] = useState('');
+    const [content, setContent] = useState('');
+    const [status, setStatus] = useState('published');
+    const [tags, setTags] = useState([]);
     const [allTags, setAllTags] = useState([]);
     const [alertMessage, setAlertMessage] = useState(null);
-    const [thumbnail, setThumbnail] = useState(null);
 
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
     const navigate = useNavigate();
@@ -31,13 +26,11 @@ const UserPostEdit = ({ id }) => {
                 const response = await BlogAPI.getBlogDetails(id);
                 const blogData = response.data;
 
-                setBlogContent({
-                    content: blogData.content.content,
-                    title: blogData.title,
-                    description: blogData.description,
-                    status: blogData.status,
-                    tags: blogData.tags.map(tag => tag.tag),
-                });
+                setTitle(blogData.title);
+                setDescription(blogData.description);
+                setContent(blogData.content.content);
+                setStatus(blogData.status);
+                setTags(blogData.tags.map(tag => tag.tag));
             } catch (error) {
                 console.error('Error fetching blog:', error.message);
             }
@@ -61,10 +54,7 @@ const UserPostEdit = ({ id }) => {
     }, [id, isAuthenticated]);
 
     const handleContentChange = (value) => {
-        setBlogContent((prev) => ({
-            ...prev,
-            content: value,
-        }));
+        setContent(value);
     };
 
     const handleThumbnailChange = (event) => {
@@ -75,59 +65,56 @@ const UserPostEdit = ({ id }) => {
     const handleTagsChange = (event) => {
         const { value, checked } = event.target;
 
-        if (checked) {
-            // Add the tag to blogContent.tags if it doesn't already exist
-            if (!blogContent.tags.includes(value)) {
-                blogContent.tags.push(value);
-            }
-        } else {
-            // Remove the tag from blogContent.tags
-            const index = blogContent.tags.indexOf(value);
-            if (index !== -1) {
-                blogContent.tags.splice(index, 1);
-            }
-        }
+        const updatedTags = checked
+            ? [...tags, value]
+            : tags.filter(tag => tag !== value);
 
-        // Ensure immutability by creating a new array for blogContent.tags
-        setBlogContent(prev => ({
-            ...prev,
-            tags: [...blogContent.tags]
-        }));
+        setTags(updatedTags);
     };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setBlogContent((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        if (name === 'title') setTitle(value);
+        else if (name === 'description') setDescription(value);
+        else if (name === 'status') setStatus(value);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        blogContent.thumbnail = thumbnail;
-
-        if (blogContent.tags.length < 1) {
+        if (tags.length < 1) {
             setAlertMessage({ type: "warning", message: "Please select tags." });
             return;
         }
 
+        const formData = new FormData();
+        formData.append('title', title);
+        if (thumbnail) {
+            formData.append('thumbnail', thumbnail);
+        }
+        formData.append('description', description);
+        formData.append('status', status);
+        formData.append('content', content);
+        tags.forEach(tag => formData.append('tags', tag));
+
         try {
-            const response = await BlogAPI.updateMyBlogPost(id, blogContent);
+            const response = await BlogAPI.updateMyBlogPost(id, formData);
             console.log(response);
             navigate(`/post/${id}`);
-            console.log(blogContent);
+            console.log(formData);
         } catch (error) {
             console.error('Error updating blog:', error.message);
         }
     };
 
+    const handleCloseAlert = () => {
+        setAlertMessage(null);
+    }
+
     return (
         <div className='container-fluid my-5'>
-            {alertMessage ? (
-                <AlertMessage message={alertMessage.message} />
-            ) : null}
+            {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
 
             <h3 className='text-center rounded p-2'>Edit Blog</h3>
 
@@ -144,7 +131,7 @@ const UserPostEdit = ({ id }) => {
                                 className="form-control"
                                 id="title"
                                 name="title"
-                                value={blogContent.title}
+                                value={title}
                                 onChange={handleChange}
                                 required
                                 maxLength={255}
@@ -170,7 +157,7 @@ const UserPostEdit = ({ id }) => {
                                 className="form-control"
                                 id="description"
                                 name="description"
-                                value={blogContent.description}
+                                value={description}
                                 onChange={handleChange}
                                 required
                                 rows={2}
@@ -191,7 +178,7 @@ const UserPostEdit = ({ id }) => {
                                             id={tag.id}
                                             name="tags"
                                             value={tag.tag}
-                                            checked={blogContent.tags.includes(tag.tag)}
+                                            checked={tags.includes(tag.tag)}
                                             onChange={handleTagsChange}
                                         />
                                         <label className="form-check-label" htmlFor={tag.id}>
@@ -205,7 +192,7 @@ const UserPostEdit = ({ id }) => {
                             className='form-control my-2'
                             name="status"
                             id="status"
-                            value={blogContent.status}
+                            value={status}
                             onChange={handleChange}
                         >
                             <option value="published">Publish</option>
@@ -215,7 +202,7 @@ const UserPostEdit = ({ id }) => {
                 </div>
 
                 <ReactQuill
-                    value={blogContent.content}
+                    value={content}
                     name="content"
                     className='shadow form-control p-2'
                     onChange={handleContentChange}
@@ -237,10 +224,8 @@ const UserPostEdit = ({ id }) => {
                         ],
                     }}
                 />
-
-
             </form>
-            <p className='text-bg-warning rounded p-2 m-2'><i>Note: </i>After editing the post, your post's views will be reseted</p>
+            <p className='text-bg-warning rounded p-2 m-2'><i>Note: </i>After editing the post, your post's views will be reset</p>
         </div>
     );
 };

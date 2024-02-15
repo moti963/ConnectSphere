@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import UserProfile, UserContact, UserEducation, UserWorkExperience, UserSkill, UserProject, UserCertification, UserInterest, UserSocialMedia, UserLanguage
-
+from .models import UserProfile, UserContact, UserEducation, UserWorkExperience, UserSkill, UserProject, UserCertification, UserInterest, UserSocialMedia, UserLanguage, UserResume, UserCoverLetter
+from blogapp.models import Blog
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -138,3 +138,21 @@ class UserLanguageSerializer(serializers.ModelSerializer):
             'language_name': {'required': True, 'allow_blank': False},
             'proficiency_level': {'required': True, 'allow_blank': False},
         }
+
+
+class UserBlogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Blog
+        fields = ["id", "title"]
+
+
+class UserResumeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserResume
+        fields = '__all__'
+
+
+class UserCoverLetterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCoverLetter
+        fields = '__all__'

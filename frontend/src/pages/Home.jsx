@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import BlogAPI from '../blog/BlogAPI';
 import '../static/css/MainHome.css';
 import BlogList from '../blog/BlogList';
-import NotFound from '../components/NotFound';
+// import NotFound from '../components/NotFound';
+import AlertMessage from '../components/AlertMessage';
+import noData from "../static/images/no_info_found.jpg";
 
 
 const Home = () => {
@@ -12,6 +14,13 @@ const Home = () => {
   const [selectedTag, setSelectedTag] = useState(null);
   const [blogPosts, setBlogPosts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [prevPage, setPrevPage] = useState(null);
+  const [nextPage, setNextPage] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
+
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +31,8 @@ const Home = () => {
 
         if (selectedTag === null) {
           const response = await BlogAPI.getAllBlogs();
+          setPrevPage(response.data.previous);
+          setNextPage(response.data.next);
           setBlogPosts(response.data.results);
         }
       } catch (error) {
@@ -56,6 +67,17 @@ const Home = () => {
       }
     }
   };
+
+  const handlePagination = async (url) => {
+    try {
+      const response = await BlogAPI.getAllBlogsByUrl(url);
+      setPrevPage(response.data.previous);
+      setNextPage(response.data.next);
+      setBlogPosts(response.data.results);
+    } catch (error) {
+      console.error('Error fetching blogs:', error.message);
+    }
+  }
 
   return (
     <>
@@ -95,8 +117,24 @@ const Home = () => {
       </header>
 
       <main className="container">
+        {alertMessage && <AlertMessage type={alertMessage.type} message={alertMessage.message} onClose={handleCloseAlert} />}
+
         {/* Render your blog posts based on the selected tag */}
-        {blogPosts ? (<BlogList blogs={blogPosts} />) : (<NotFound />)}
+        {(blogPosts && blogPosts.length > 0) ? (<BlogList blogs={blogPosts} />) : (<div className='container my-5 py-5 d-flex justify-content-center'>
+          <img src={noData} alt='No data found' />
+        </div>)}
+
+        <nav aria-label="Page navigation example">
+          <ul className="pagination justify-content-center">
+            {prevPage ? (<li className="page-item">
+              <button className="page-link" onClick={() => handlePagination(prevPage)}>Previous</button>
+            </li>) : null}
+            {nextPage ? (
+              <li className="page-item">
+                <button className="page-link" onClick={() => handlePagination(nextPage)}>Next</button>
+              </li>) : null}
+          </ul>
+        </nav>
       </main>
     </>
   );

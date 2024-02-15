@@ -39,7 +39,7 @@ class BlogSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Blog
-        fields = ['id', 'user', 'username', 'title', 'description', 'content', 'status', 'tags', 'views', 'created_at']
+        fields = ['id', 'user', 'username', 'title', 'thumbnail', 'description', 'content', 'status', 'tags', 'views', 'created_at']
         read_only_fields = ['user', 'views', 'created_at']
         extra_kwargs = {
             'title': {'required': True, 'allow_blank': False},
