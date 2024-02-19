@@ -23,9 +23,9 @@ const Home = () => {
   const handleCloseAlert = () => {
     setAlertMessage(null);
   }
-  console.log(BlogAPI.baseUrl);
-  console.log(AuthAPI.baseUrl);
-  console.log(UserAPI.baseUrl);
+  // console.log(BlogAPI.baseUrl);
+  // console.log(AuthAPI.baseUrl);
+  // console.log(UserAPI.baseUrl);
 
   useEffect(() => {
     const fetchData = async () => {
